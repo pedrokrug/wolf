@@ -1,0 +1,18 @@
+
+
+/////////////////API para pruebas
+Host: https://canallogos.v3.dev.partnertec.es/application/ws/v1/index.php
+ClientId: EnergiaMia2020
+Secret: babf843e78a37b3caed2a8882291a674bfa1ec77a1be07e5f1c779c5d4269792
+
+
+
+
+/////////////////API para producción
+Host: https://energiamia2020.logosenergia.wolfcrm.es/application/ws/v1/index.php
+ClientId: EnergiaMia2020
+Secret: 26488c457606d42c127c2042a1ddc3ff70f3991a89937d9d5dd6a36164580810
+
+
+
+

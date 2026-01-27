@@ -1,0 +1,1057 @@
+{
+  "info": {
+    "_postman_id": "239f76a2-abbb-49f9-a41d-027e229c8ebb",
+    "name": "Logos - EnergiaMia2020 - WolfCRM",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13196737"
+  },
+  "item": [
+    {
+      "name": "01 - Auth (get token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();\r",
+              "pm.collectionVariables.set(\"wolfcrm_api_token\", jsonData[\"data\"][\"token\"]);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "method",
+              "value": "auth",
+              "type": "text"
+            },
+            {
+              "key": "clientId",
+              "value": "{{wolfcrm_api_client_id}}",
+              "type": "text"
+            },
+            {
+              "key": "secret",
+              "value": "{{wolfcrm_api_client_secret}}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02 - getByVatOrEmail",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "getByVatOrEmail",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "Customer",
+              "type": "text"
+            },
+            {
+              "key": "VAT",
+              "value": "49460144R",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03 - setCustomer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "set",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "Customer",
+              "type": "text"
+            },
+            {
+              "key": "TYPE",
+              "value": "",
+              "description": "Dejar siempre en blanco ya que crearéis clientes",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "NAME",
+              "value": "Cliente pruebas WolfCRM EnergiaMia2020 2_Apellido 1_Apellido 2",
+              "type": "text"
+            },
+            {
+              "key": "VAT",
+              "value": "49460144R",
+              "description": "Sin espacios",
+              "type": "text"
+            },
+            {
+              "key": "VAT_TYPE",
+              "value": "NIF",
+              "type": "text"
+            },
+            {
+              "key": "MANAGER_USER_CODE",
+              "value": "CRM006",
+              "type": "text"
+            },
+            {
+              "key": "ADDRESS",
+              "value": "Calle de pruebas 23, 1ª A",
+              "type": "text"
+            },
+            {
+              "key": "POSTAL_CODE",
+              "value": "47001",
+              "type": "text"
+            },
+            {
+              "key": "CITY",
+              "value": "Valladolid",
+              "type": "text"
+            },
+            {
+              "key": "NOMBRE_POBLACION",
+              "value": "VALLADOLID",
+              "type": "text"
+            },
+            {
+              "key": "COUNTY",
+              "value": "ES-VA",
+              "description": "Código ISO",
+              "type": "text"
+            },
+            {
+              "key": "COUNTRY",
+              "value": "ES",
+              "description": "Código ISO",
+              "type": "text"
+            },
+            {
+              "key": "EMAIL",
+              "value": "jpolo@partnertec.es",
+              "type": "text"
+            },
+            {
+              "key": "PHONE",
+              "value": "983000001",
+              "description": "Sin espacios, solo numeros",
+              "type": "text"
+            },
+            {
+              "key": "MOBILE_PHONE",
+              "value": "655916018",
+              "description": "Sin espacios, solo numeros",
+              "type": "text"
+            },
+            {
+              "key": "IBAN",
+              "value": "ES6621000418401234567891",
+              "description": "Sin espacios",
+              "type": "text"
+            },
+            {
+              "key": "CNAE",
+              "value": "9820",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04 - setContract",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "set",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "Contract",
+              "type": "text"
+            },
+            {
+              "key": "USER_ID",
+              "value": "CRM006",
+              "type": "text"
+            },
+            {
+              "key": "CUSTOMER_ID",
+              "value": "C000000085",
+              "type": "text"
+            },
+            {
+              "key": "SUPPLY",
+              "value": "Electricidad",
+              "type": "text"
+            },
+            {
+              "key": "CUPS",
+              "value": "ES3140976821167992DS",
+              "type": "text"
+            },
+            {
+              "key": "CONTRACT_TYPE",
+              "value": "EMPRESA",
+              "type": "text"
+            },
+            {
+              "key": "PRODUCT",
+              "value": "BETA FIJO HOGAR",
+              "type": "text"
+            },
+            {
+              "key": "FEE",
+              "value": "12",
+              "description": "Indicar solo si aplica al producto",
+              "type": "text"
+            },
+            {
+              "key": "FEEPOTENCIA",
+              "value": "1.5",
+              "description": "Indicar solo si aplica al producto",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__CONTRACT_SERVICES",
+              "value": "TARIFA PLUS",
+              "description": "Indicar solo si aplica",
+              "type": "text"
+            },
+            {
+              "key": "REF_CATASTRAL",
+              "value": "000000000000000001",
+              "type": "text"
+            },
+            {
+              "key": "TIPO_SUMINISTRO",
+              "value": "VI",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__USO_GAS",
+              "value": "01",
+              "description": "solo aplica a contratos de Gas",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "EXTRA_INFO__VIVIENDA_HABITUAL",
+              "value": "1",
+              "description": "solo aplica a contratos de Gas",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "TITULAR_NAME",
+              "value": "Firmante Rodríguez",
+              "type": "text"
+            },
+            {
+              "key": "TITULAR_VAT",
+              "value": "78654782L",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__TITULAR_CARGO",
+              "value": "Mi cargo",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__TITULAR_PHONE",
+              "value": "655916018",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__SWIFT",
+              "value": "BSCHXXXX",
+              "type": "text"
+            },
+            {
+              "key": "IBAN",
+              "value": "ES6621000418401234567891",
+              "type": "text"
+            },
+            {
+              "key": "MANDATO_SEPA",
+              "value": "Core",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__FACTURA_PAPEL",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__PAGADOR_NAME",
+              "value": "Pagador Fernández",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__PAGADOR_ADDRESS",
+              "value": "Calle del pagador",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__PAGADOR_CITY",
+              "value": "Palencia",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__PAGADOR_NOMBRE_POBLACION",
+              "value": "PALENCIA",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__PAGADOR_COUNTY",
+              "value": "ES-P",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__PAGADOR_POSTAL_CODE",
+              "value": "34001",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__PAGADOR_COUNTRY",
+              "value": "ES",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__NO_TRATAR_DATOS",
+              "value": "0",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__NO_CEDER_DATOS",
+              "value": "0",
+              "type": "text"
+            },
+            {
+              "key": "PREV_ACTIVACION_DATE",
+              "value": "2023-06-22",
+              "description": "Rellenar solo si no se rellena CICLO_LECTURA",
+              "type": "text"
+            },
+            {
+              "key": "CICLO_LECTURA",
+              "value": "0",
+              "description": "Rellenar solo si no se rellena FIRMA_DATE",
+              "type": "text"
+            },
+            {
+              "key": "FIRMA_DATE",
+              "value": "2023-06-15",
+              "type": "text"
+            },
+            {
+              "key": "TARIFA_BOMP",
+              "value": "2.0TD",
+              "type": "text"
+            },
+            {
+              "key": "DISTRIBUIDORA",
+              "value": "Iberdrola",
+              "type": "text"
+            },
+            {
+              "key": "CUPS_ADDRESS",
+              "value": "Calle del punto de suministro 7, 1º A",
+              "type": "text"
+            },
+            {
+              "key": "CUPS_POSTAL_CODE",
+              "value": "47001",
+              "type": "text"
+            },
+            {
+              "key": "CUPS_CITY",
+              "value": "Valladolid",
+              "type": "text"
+            },
+            {
+              "key": "EXTRA_INFO__CUPS_COD_CITY",
+              "value": "47186",
+              "type": "text"
+            },
+            {
+              "key": "CUPS_NOMBRE_POBLACION",
+              "value": "VALLADOLID",
+              "type": "text"
+            },
+            {
+              "key": "CUPS_COUNTY",
+              "value": "ES-VA",
+              "type": "text"
+            },
+            {
+              "key": "POTENCIA_P1",
+              "value": "1.5",
+              "description": "Se deberán informar las potencias en función de la tarifa de acceso",
+              "type": "text"
+            },
+            {
+              "key": "POTENCIA_P2",
+              "value": "1.6",
+              "type": "text"
+            },
+            {
+              "key": "CONSUMO_P1",
+              "value": "150",
+              "description": "Se deberán informar las potencias en función de la tarifa de acceso",
+              "type": "text"
+            },
+            {
+              "key": "CONSUMO_P2",
+              "value": "250",
+              "type": "text"
+            },
+            {
+              "key": "CMB_TARIFA_POT",
+              "value": "1",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "CMB_TITULAR",
+              "value": "1",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "TIPO_CMB_TITULAR",
+              "value": "T",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "CIE",
+              "value": "1",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "SIPSDataReported",
+              "value": "1",
+              "description": "¡¡¡IMPORTANTE!!! enviar este campo a 1, sino el CRM obtendreá los datos del suministro de SIPS independientemente de lo que se haya enviado",
+              "type": "text"
+            },
+            {
+              "key": "digitalSignature",
+              "value": "1",
+              "description": "Indicar 1 si se quiere contratación electrónica",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "VAT_FILE",
+              "description": "form-data multipart file",
+              "type": "file",
+              "value": null,
+              "disabled": true
+            },
+            {
+              "key": "INVOICE_FILE",
+              "description": "form-data multipart file",
+              "type": "file",
+              "value": null,
+              "disabled": true
+            },
+            {
+              "key": "DESCRIPTION",
+              "value": "¡Esto es una prueba!",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - getCustomers",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "get",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "Customer",
+              "type": "text"
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Si no se indica se asume la primera página",
+              "type": "text"
+            },
+            {
+              "key": "filters[MANAGER_USER_CODE][VALUE]",
+              "value": "CRM006",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "filters[MANAGER_USER_CODE][OPERATOR]",
+              "value": "EQUAL",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - getCustomer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "get",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "Customer",
+              "type": "text"
+            },
+            {
+              "key": "objectId",
+              "value": "85",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - getContracts",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "get",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "Contract",
+              "type": "text"
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Si no se indica se asume la primera página",
+              "type": "text"
+            },
+            {
+              "key": "filters[USER_ID][VALUE]",
+              "value": "CRM006",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "filters[USER_ID][OPERATOR]",
+              "value": "EQUAL",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - getContract",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "get",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "Contract",
+              "type": "text"
+            },
+            {
+              "key": "objectId",
+              "value": "243",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - getContractProducts",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "get",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "ContractProduct",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - getCountries",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "get",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "Country",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - getCounties",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "get",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "County",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - getUsers",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "get",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "User",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - getContractStatus",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "get",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "Selector",
+              "type": "text"
+            },
+            {
+              "key": "filters[TYPE][VALUE]",
+              "value": "CONTRACT_STATUS",
+              "type": "text"
+            },
+            {
+              "key": "filters[TYPE][OPERATOR]",
+              "value": "EQUAL",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - getContractAtrStatus",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "token",
+              "value": "{{wolfcrm_api_token}}",
+              "type": "text"
+            },
+            {
+              "key": "method",
+              "value": "getContractAtrStatus",
+              "type": "text"
+            },
+            {
+              "key": "class",
+              "value": "Contract",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{wolfcrm_api_url}}",
+          "host": [
+            "{{wolfcrm_api_url}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "wolfcrm_api_url",
+      "value": "https://canallogos.v3.dev.partnertec.es/application/ws/v1/index.php"
+    },
+    {
+      "key": "wolfcrm_api_client_id",
+      "value": "EnergiaMia2020"
+    },
+    {
+      "key": "wolfcrm_api_client_secret",
+      "value": "babf843e78a37b3caed2a8882291a674bfa1ec77a1be07e5f1c779c5d4269792"
+    },
+    {
+      "key": "wolfcrm_api_token",
+      "value": ""
+    }
+  ]
+}
