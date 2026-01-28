@@ -671,26 +671,22 @@
             {
               "parameterType": "formBinaryData",
               "name": "VAT_FILE",
-              "inputDataFieldName": "={{ $json.mapped_fields?.includes('VAT_FILE') ? 'VAT_FILE' : '' }}",
-              "disabled": "={{ !$json.mapped_fields?.includes('VAT_FILE') }}"
+              "inputDataFieldName": "VAT_FILE"
             },
             {
               "parameterType": "formBinaryData",
               "name": "INVOICE_FILE",
-              "inputDataFieldName": "={{ $json.mapped_fields?.includes('INVOICE_FILE') ? 'INVOICE_FILE' : '' }}",
-              "disabled": "={{ !$json.mapped_fields?.includes('INVOICE_FILE') }}"
+              "inputDataFieldName": "INVOICE_FILE"
             },
             {
               "parameterType": "formBinaryData",
               "name": "ANEXO_RESIDENCIAL_FILE",
-              "inputDataFieldName": "={{ $json.mapped_fields?.includes('ANEXO_RESIDENCIAL_FILE') ? 'ANEXO_RESIDENCIAL_FILE' : '' }}",
-              "disabled": "={{ !$json.mapped_fields?.includes('ANEXO_RESIDENCIAL_FILE') }}"
+              "inputDataFieldName": "ANEXO_RESIDENCIAL_FILE"
             },
             {
               "parameterType": "formBinaryData",
               "name": "OTHER_FILE",
-              "inputDataFieldName": "={{ $json.mapped_fields?.includes('OTHER_FILE') ? 'OTHER_FILE' : '' }}",
-              "disabled": "={{ !$json.mapped_fields?.includes('OTHER_FILE') }}"
+              "inputDataFieldName": "OTHER_FILE"
             }
           ]
         },
