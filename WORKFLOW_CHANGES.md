@@ -4,6 +4,8 @@
 
 The n8n workflow has been completely refactored to fix the critical issue where documents could not be uploaded during or after contract creation. The workflow now uploads all documents **WITH** the contract in a single API call, preventing issues with contracts being frozen during the digital signature process.
 
+**LATEST UPDATE (2026-01-28)**: Added conditional file upload support - the workflow now only sends file parameters that actually exist, preventing API errors when some document types are missing (e.g., when there's no OTHER_FILE).
+
 ## Critical Problem Fixed
 
 **Before**: Documents were being uploaded AFTER contract creation, which failed because:
@@ -51,31 +53,59 @@ The workflow now intelligently maps NODO document types to WolfCRM fields:
 | ANEXO, CONTRATO (in filename) | ANEXO_RESIDENCIAL_FILE |
 | All others | OTHER_FILE |
 
-### 4. Modified Nodes
+### 4. Conditional File Upload (NEW)
 
-**"Create Contract" → "Create Contract with Files"**:
-- Added binary file parameters for VAT_FILE, INVOICE_FILE, ANEXO_RESIDENCIAL_FILE, OTHER_FILE
-- Uses dynamic expressions to only send files that are available
+The workflow now uses a Code node to dynamically build the HTTP request with only the files that actually exist. This prevents API errors when some document types are missing:
+
+- Contract creation uses FormData to conditionally append files
+- Only files present in binary data are sent to the API
+- Works with any combination of documents (0-4 files)
+- No more errors from missing OTHER_FILE or any other document type
+
+### 5. Modified Nodes
+
+**"Create Contract" → "Create Contract with Files (Code)"**:
+- **NEW**: Now implemented as a Code node instead of HTTP Request node
+- Uses axios + FormData to build multipart/form-data requests
+- Conditionally appends only files that exist in binary data
+- Dynamically builds request with all contract fields
+- Handles missing files gracefully - no API errors
 - Maintains all original contract field mappings
 
-### 5. Removed Nodes
+### 6. Removed Nodes
 
 - All post-creation document upload logic
 - Obsolete document processing nodes that ran after contract creation
+- Old HTTP Request node with static file parameters (replaced with conditional Code node)
 
 ## Technical Details
 
 ### File Upload Implementation
 
-The contract creation now uses `multipart/form-data` with binary attachments:
+The contract creation now uses a Code node with axios and FormData for conditional file uploads:
 
 ```javascript
-// Dynamic file attachment based on available documents
-VAT_FILE: {{ $json.mapped_fields?.includes('VAT_FILE') ? 'VAT_FILE' : '' }}
-INVOICE_FILE: {{ $json.mapped_fields?.includes('INVOICE_FILE') ? 'INVOICE_FILE' : '' }}
-ANEXO_RESIDENCIAL_FILE: {{ $json.mapped_fields?.includes('ANEXO_RESIDENCIAL_FILE') ? 'ANEXO_RESIDENCIAL_FILE' : '' }}
-OTHER_FILE: {{ $json.mapped_fields?.includes('OTHER_FILE') ? 'OTHER_FILE' : '' }}
+// Conditionally add binary files only if they exist
+if (item.binary) {
+  const fileFields = ['VAT_FILE', 'INVOICE_FILE', 'ANEXO_RESIDENCIAL_FILE', 'OTHER_FILE'];
+
+  for (const fieldName of fileFields) {
+    if (item.binary[fieldName]) {
+      const file = item.binary[fieldName];
+      formData.append(fieldName, Buffer.from(file.data, 'base64'), {
+        filename: file.fileName || `${fieldName}.pdf`,
+        contentType: file.mimeType || 'application/pdf'
+      });
+    }
+  }
+}
 ```
+
+**Key Benefits**:
+- Only sends files that actually exist
+- No empty/null file parameters sent to API
+- Prevents "Cannot read properties of undefined" errors
+- Works with contracts that have 0, 1, 2, 3, or 4 documents
 
 ### Binary Data Flow
 
@@ -171,6 +201,8 @@ To rollback:
 ## Git History
 
 ```
+0c836fb - Make binary file uploads conditional - only send files that exist
+18ec410 - Fix binary file parameter handling in contract creation
 9e5fc9b - Add backup of original workflow before refactoring
 c70946c - Refactor n8n workflow to upload documents during contract creation
 ```
