@@ -194,7 +194,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\n\n// Get products from Wolf API response\nlet rawProducts = {};\nfor (const item of items) {\n  if (item.json.data && typeof item.json.data === 'object') {\n    // Check if it's the products response (has CODE field in values)\n    const firstValue = Object.values(item.json.data)[0];\n    if (firstValue && firstValue.CODE !== undefined) {\n      rawProducts = item.json.data;\n    }\n  }\n}\n\n// Convert products object to array with normalized names\nconst productList = Object.values(rawProducts).map(p => ({\n  id: p.ID,\n  code: p.CODE,\n  name: p.NAME,\n  nameUpper: (p.NAME || p.CODE || '').toUpperCase(),\n  disabled: p.DISABLED === '1'\n}));\n\n// Province map (Spain ISO codes)\nconst provinceMap = {\n  'ALAVA': 'ES-VI', 'ÁLAVA': 'ES-VI', 'ARABA': 'ES-VI',\n  'ALBACETE': 'ES-AB',\n  'ALICANTE': 'ES-A', 'ALACANT': 'ES-A',\n  'ALMERIA': 'ES-AL', 'ALMERÍA': 'ES-AL',\n  'ASTURIAS': 'ES-O', 'OVIEDO': 'ES-O',\n  'AVILA': 'ES-AV', 'ÁVILA': 'ES-AV',\n  'BADAJOZ': 'ES-BA',\n  'BARCELONA': 'ES-B',\n  'BURGOS': 'ES-BU',\n  'CACERES': 'ES-CC', 'CÁCERES': 'ES-CC',\n  'CADIZ': 'ES-CA', 'CÁDIZ': 'ES-CA',\n  'CANTABRIA': 'ES-S', 'SANTANDER': 'ES-S',\n  'CASTELLON': 'ES-CS', 'CASTELLÓN': 'ES-CS', 'CASTELLO': 'ES-CS',\n  'CEUTA': 'ES-CE',\n  'CIUDAD REAL': 'ES-CR',\n  'CORDOBA': 'ES-CO', 'CÓRDOBA': 'ES-CO',\n  'CORUÑA': 'ES-C', 'A CORUÑA': 'ES-C', 'LA CORUÑA': 'ES-C',\n  'CUENCA': 'ES-CU',\n  'GIRONA': 'ES-GI', 'GERONA': 'ES-GI',\n  'GRANADA': 'ES-GR',\n  'GUADALAJARA': 'ES-GU',\n  'GUIPUZCOA': 'ES-SS', 'GUIPÚZCOA': 'ES-SS', 'GIPUZKOA': 'ES-SS',\n  'HUELVA': 'ES-H',\n  'HUESCA': 'ES-HU',\n  'ILLES BALEARS': 'ES-PM', 'ISLAS BALEARES': 'ES-PM', 'BALEARES': 'ES-PM', 'MALLORCA': 'ES-PM',\n  'JAEN': 'ES-J', 'JAÉN': 'ES-J',\n  'LEON': 'ES-LE', 'LEÓN': 'ES-LE',\n  'LERIDA': 'ES-L', 'LLEIDA': 'ES-L', 'LÉRIDA': 'ES-L',\n  'LUGO': 'ES-LU',\n  'MADRID': 'ES-M',\n  'MALAGA': 'ES-MA', 'MÁLAGA': 'ES-MA',\n  'MELILLA': 'ES-ML',\n  'MURCIA': 'ES-MU',\n  'NAVARRA': 'ES-NA', 'NAFARROA': 'ES-NA',\n  'OURENSE': 'ES-OR', 'ORENSE': 'ES-OR',\n  'PALENCIA': 'ES-P',\n  'LAS PALMAS': 'ES-GC', 'PALMAS': 'ES-GC', 'GRAN CANARIA': 'ES-GC',\n  'PONTEVEDRA': 'ES-PO',\n  'LA RIOJA': 'ES-LO', 'RIOJA': 'ES-LO', 'LOGROÑO': 'ES-LO',\n  'SALAMANCA': 'ES-SA',\n  'SANTA CRUZ DE TENERIFE': 'ES-TF', 'TENERIFE': 'ES-TF',\n  'SEGOVIA': 'ES-SG',\n  'SEVILLA': 'ES-SE',\n  'SORIA': 'ES-SO',\n  'TARRAGONA': 'ES-T',\n  'TERUEL': 'ES-TE',\n  'TOLEDO': 'ES-TO',\n  'VALENCIA': 'ES-V', 'VALÈNCIA': 'ES-V',\n  'VALLADOLID': 'ES-VA',\n  'VIZCAYA': 'ES-BI', 'BIZKAIA': 'ES-BI',\n  'ZAMORA': 'ES-ZA',\n  'ZARAGOZA': 'ES-Z'\n};\n\nreturn [{\n  json: {\n    provinceMap,\n    productList,\n    debug_products_count: productList.length,\n    debug_first_product: productList[0] || null\n  }\n}];"
+        "jsCode": "const items = $input.all();\n\n// Get products from Wolf API response\nlet rawProducts = {};\nfor (const item of items) {\n  if (item.json.data && typeof item.json.data === 'object') {\n    // Check if it's the products response (has CODE field in values)\n    const firstValue = Object.values(item.json.data)[0];\n    if (firstValue && firstValue.CODE !== undefined) {\n      rawProducts = item.json.data;\n    }\n  }\n}\n\n// Convert products object to array with normalized names\nconst productList = Object.values(rawProducts).map(p => ({\n  id: p.ID,\n  code: p.CODE,\n  name: p.NAME,\n  nameUpper: (p.NAME || p.CODE || '').toUpperCase(),\n  disabled: p.DISABLED === '1'\n}));\n\n// Province map (Spain ISO codes)\nconst provinceMap = {\n  'ALAVA': 'ES-VI', 'ÁLAVA': 'ES-VI', 'ARABA': 'ES-VI',\n  'ALBACETE': 'ES-AB',\n  'ALICANTE': 'ES-A', 'ALACANT': 'ES-A',\n  'ALMERIA': 'ES-AL', 'ALMERÍA': 'ES-AL',\n  'ASTURIAS': 'ES-O', 'OVIEDO': 'ES-O',\n  'AVILA': 'ES-AV', 'ÁVILA': 'ES-AV',\n  'BADAJOZ': 'ES-BA',\n  'BARCELONA': 'ES-B',\n  'BURGOS': 'ES-BU',\n  'CACERES': 'ES-CC', 'CÁCERES': 'ES-CC',\n  'CADIZ': 'ES-CA', 'CÁDIZ': 'ES-CA',\n  'CANTABRIA': 'ES-S', 'SANTANDER': 'ES-S',\n  'CASTELLON': 'ES-CS', 'CASTELLÓN': 'ES-CS', 'CASTELLO': 'ES-CS',\n  'CEUTA': 'ES-CE',\n  'CIUDAD REAL': 'ES-CR',\n  'CORDOBA': 'ES-CO', 'CÓRDOBA': 'ES-CO',\n  'CORUÑA': 'ES-C', 'A CORUÑA': 'ES-C', 'LA CORUÑA': 'ES-C',\n  'CUENCA': 'ES-CU',\n  'GIRONA': 'ES-GI', 'GERONA': 'ES-GI',\n  'GRANADA': 'ES-GR',\n  'GUADALAJARA': 'ES-GU',\n  'GUIPUZCOA': 'ES-SS', 'GUIPÚZCOA': 'ES-SS', 'GIPUZKOA': 'ES-SS',\n  'HUELVA': 'ES-H',\n  'HUESCA': 'ES-HU',\n  'ILLES BALEARS': 'ES-PM', 'ISLAS BALEARES': 'ES-PM', 'BALEARES': 'ES-PM', 'MALLORCA': 'ES-PM',\n  'JAEN': 'ES-J', 'JAÉN': 'ES-J',\n  'LEON': 'ES-LE', 'LEÓN': 'ES-LE',\n  'LERIDA': 'ES-L', 'LLEIDA': 'ES-L', 'LÉRIDA': 'ES-L',\n  'LUGO': 'ES-LU',\n  'MADRID': 'ES-M',\n  'MALAGA': 'ES-MA', 'MÁLAGA': 'ES-MA',\n  'MELILLA': 'ES-ML',\n  'MURCIA': 'ES-MU',\n  'NAVARRA': 'ES-NA', 'NAFARROA': 'ES-NA',\n  'OURENSE': 'ES-OR', 'ORENSE': 'ES-OR',\n  'PALENCIA': 'ES-P',\n  'LAS PALMAS': 'ES-GC', 'PALMAS': 'ES-GC', 'GRAN CANARIA': 'ES-GC',\n  'PONTEVEDRA': 'ES-PO',\n  'LA RIOJA': 'ES-LO', 'RIOJA': 'ES-LO', 'LOGROÑO': 'ES-LO',\n  'SALAMANCA': 'ES-SA',\n  'SANTA CRUZ DE TENERIFE': 'ES-TF', 'TENERIFE': 'ES-TF',\n  'SEGOVIA': 'ES-SG',\n  'SEVILLA': 'ES-SE',\n  'SORIA': 'ES-SO',\n  'TARRAGONA': 'ES-T',\n  'TERUEL': 'ES-TE',\n  'TOLEDO': 'ES-TO',\n  'VALENCIA': 'ES-V', 'VALENCIÀ': 'ES-V',\n  'VALLADOLID': 'ES-VA',\n  'VIZCAYA': 'ES-BI', 'BIZKAIA': 'ES-BI',\n  'ZAMORA': 'ES-ZA',\n  'ZARAGOZA': 'ES-Z'\n};\n\nreturn [{\n  json: {\n    provinceMap,\n    productList,\n    debug_products_count: productList.length,\n    debug_first_product: productList[0] || null\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -222,7 +222,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Transform NODO data to Wolf CRM Customer format\nconst items = $input.all();\n\n// Get NODO data and reference maps\nlet nodoData = null;\nlet provinceMap = {};\nlet productList = [];\n\nfor (const item of items) {\n  if (item.json.datos) {\n    nodoData = item.json.datos;\n  }\n  if (item.json.provinceMap) {\n    provinceMap = item.json.provinceMap;\n    productList = item.json.productList || [];\n  }\n}\n\nif (!nodoData) {\n  throw new Error('NODO data not found in input');\n}\n\n// Helper functions\nfunction normalizeString(s) {\n  return (s || '').toString().trim();\n}\n\nfunction getProvinceCode(provinceName) {\n  const normalized = normalizeString(provinceName).toUpperCase();\n  return provinceMap[normalized] || provinceMap[normalized.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')] || '';\n}\n\nfunction detectVatType(nif) {\n  const cleaned = normalizeString(nif).toUpperCase();\n  if (!cleaned) return 'NIF';\n  if (/^[XYZ]/.test(cleaned)) return 'NIE';\n  if (/^[A-W]\\d/.test(cleaned)) return 'CIF';\n  return 'NIF';\n}\n\nfunction getContractType(tipoEmpresa) {\n  const tipo = normalizeString(tipoEmpresa).toUpperCase();\n  switch (tipo) {\n    case 'PARTICULAR': return 'HOGAR';\n    case 'EMPRESA': return 'EMPRESA';\n    case 'AUTONOMO': return 'AUTONOMO';\n    case 'COMUNIDAD DE PROPIETARIOS': return 'COM_PROP';\n    case 'ADMINISTRACION PUBLICA': return 'ORG_PUB';\n    default: return 'HOGAR';\n  }\n}\n\nfunction getMandatoSepa(tipoEmpresa) {\n  const tipo = normalizeString(tipoEmpresa).toUpperCase();\n  return tipo === 'EMPRESA' ? 'B2B' : 'Core';\n}\n\nfunction getSupplyType(concepto) {\n  const upper = normalizeString(concepto).toUpperCase();\n  if (upper.includes('GAS')) return 'Gas';\n  return 'Electricidad';\n}\n\nfunction extractTarifaBomp(concepto) {\n  const match = normalizeString(concepto).match(/^([0-9.]+TD)/i);\n  return match ? match[1].toUpperCase() : '';\n}\n\nfunction formatName(name) {\n  return normalizeString(name).replace(/\\s+/g, '_');\n}\n\nfunction matchProduct(concepto, productList) {\n  const conceptoUpper = normalizeString(concepto).toUpperCase();\n  \n  // Remove tarifa prefix (e.g., \"2.0TD - \")\n  const conceptoClean = conceptoUpper.replace(/^[0-9.]+TD\\s*[-–]\\s*/i, '').trim();\n  \n  // Try exact match first\n  let match = productList.find(p => p.nameUpper === conceptoUpper || p.nameUpper === conceptoClean);\n  if (match) return match;\n  \n  // Try: product name contains cleaned concepto\n  match = productList.find(p => p.nameUpper.includes(conceptoClean));\n  if (match) return match;\n  \n  // Try: cleaned concepto contains product name\n  match = productList.find(p => conceptoClean.includes(p.nameUpper));\n  if (match) return match;\n  \n  // Fuzzy match: extract key words and score\n  const conceptoWords = conceptoClean.split(/[\\s_-]+/).filter(w => w.length > 1);\n  \n  let bestMatch = null;\n  let bestScore = 0;\n  \n  for (const product of productList) {\n    const productWords = product.nameUpper.split(/[\\s_-]+/).filter(w => w.length > 1);\n    \n    let score = 0;\n    for (const cWord of conceptoWords) {\n      for (const pWord of productWords) {\n        if (cWord === pWord) {\n          score += 2;\n        } else if (pWord.includes(cWord) || cWord.includes(pWord)) {\n          score += 1;\n        }\n      }\n    }\n    \n    if (score > bestScore) {\n      bestScore = score;\n      bestMatch = product;\n    }\n  }\n  \n  if (bestScore >= 2) return bestMatch;\n  \n  return null;\n}\n\n// Get province codes\nconst customerCounty = getProvinceCode(nodoData.provincia);\nconst cupsCounty = getProvinceCode(nodoData.provincia_suministro);\n\n// Match product\nconst matchedProduct = matchProduct(nodoData.concepto, productList);\n\n// Build output\nconst wolfToken = $('Wolf Auth').item.json.data.token;\nconst nodoId = $('Set NODO ID').item.json.NODO_id;\n\nreturn [{\n  json: {\n    NODO_id: nodoId,\n    wolf_token: wolfToken,\n    nodo_raw: nodoData,\n    \n    customer: {\n      NAME: formatName(nodoData.nombre_cliente || nodoData.persona_contacto),\n      VAT: normalizeString(nodoData.nif),\n      VAT_TYPE: detectVatType(nodoData.nif),\n      MANAGER_USER_CODE: 'CRM006',\n      ADDRESS: normalizeString(nodoData.direccion),\n      POSTAL_CODE: normalizeString(nodoData.cp),\n      CITY: normalizeString(nodoData.poblacion),\n      NOMBRE_POBLACION: normalizeString(nodoData.poblacion),\n      COUNTY: customerCounty,\n      COUNTRY: 'ES',\n      PHONE: normalizeString(nodoData.telefono) || normalizeString(nodoData.movil),\n      MOBILE_PHONE: normalizeString(nodoData.movil),\n      EMAIL: normalizeString(nodoData.email),\n      IBAN: normalizeString(nodoData.iban_contrato),\n      CNAE: normalizeString(nodoData.cnae_actividad)\n    },\n    \n    contract: {\n      USER_ID: 'CRM006',\n      CONTRACT_TYPE: getContractType(nodoData.tipo_empresa),\n      SUPPLY: getSupplyType(nodoData.concepto),\n      CUPS: normalizeString(nodoData.cups),\n      PRODUCT: matchedProduct ? matchedProduct.code : '',\n      TARIFA_BOMP: extractTarifaBomp(nodoData.concepto),\n      TITULAR_NAME: formatName(nodoData.persona_contacto || nodoData.nombre_cliente),\n      TITULAR_VAT: normalizeString(nodoData.persona_contacto_nif || nodoData.nif),\n      'EXTRA_INFO__TITULAR_PHONE': normalizeString(nodoData.movil),\n      IBAN: normalizeString(nodoData.iban_contrato),\n      MANDATO_SEPA: getMandatoSepa(nodoData.tipo_empresa),\n      CUPS_ADDRESS: normalizeString(nodoData.direccion_suministro),\n      CUPS_POSTAL_CODE: normalizeString(nodoData.cp_suministro),\n      CUPS_CITY: normalizeString(nodoData.poblacion_suministro),\n      CUPS_NOMBRE_POBLACION: normalizeString(nodoData.poblacion_suministro),\n      CUPS_COUNTY: cupsCounty,\n      CICLO_LECTURA: nodoData.futura_activacion === 'CUANTO ANTES' ? '1' : '0',\n      digitalSignature: nodoData.firma_digital === '1' ? '1' : '0',\n      SIPSDataReported: '0',\n      'EXTRA_INFO__FACTURA_PAPEL': nodoData.fact_electronica === 'SI' ? '0' : '1',\n      'EXTRA_INFO__NO_TRATAR_DATOS': '0',\n      'EXTRA_INFO__NO_CEDER_DATOS': '0',\n      DESCRIPTION: `NODO ID: ${nodoId} | Comercial: ${nodoData.comercial}`\n    },\n    \n    matched_product: matchedProduct,\n    customer_county_resolved: customerCounty,\n    cups_county_resolved: cupsCounty,\n    firma_digital: nodoData.firma_digital === '1',\n    has_documents: (nodoData.documentacion || []).length > 0,\n    documents: nodoData.documentacion || []\n  }\n}];"
+        "jsCode": "// Transform NODO data to Wolf CRM format\n// Includes: Customer fields, Contract fields (with FIRMA_DATE, POTENCIA, CONSUMO,\n// autoconsumo, bateria virtual, observaciones), and document type mapping.\n\nconst items = $input.all();\n\nlet nodoData = null;\nlet provinceMap = {};\nlet productList = [];\n\nfor (const item of items) {\n  if (item.json.datos) {\n    nodoData = item.json.datos;\n  }\n  if (item.json.provinceMap) {\n    provinceMap = item.json.provinceMap;\n    productList = item.json.productList || [];\n  }\n}\n\nif (!nodoData) {\n  throw new Error('NODO data not found in input');\n}\n\n// ── Helper functions ──\n\nfunction normalizeString(s) {\n  return (s || '').toString().trim();\n}\n\nfunction getProvinceCode(provinceName) {\n  const normalized = normalizeString(provinceName).toUpperCase();\n  return provinceMap[normalized] || provinceMap[normalized.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')] || '';\n}\n\nfunction detectVatType(nif) {\n  const cleaned = normalizeString(nif).toUpperCase();\n  if (!cleaned) return 'NIF';\n  if (/^[XYZ]/.test(cleaned)) return 'NIE';\n  if (/^[A-W]\\d/.test(cleaned)) return 'CIF';\n  return 'NIF';\n}\n\nfunction getContractType(tipoEmpresa) {\n  const tipo = normalizeString(tipoEmpresa).toUpperCase();\n  switch (tipo) {\n    case 'PARTICULAR': return 'HOGAR';\n    case 'EMPRESA': return 'EMPRESA';\n    case 'AUTONOMO': return 'AUTONOMO';\n    case 'COMUNIDAD DE PROPIETARIOS': return 'COM_PROP';\n    case 'ADMINISTRACION PUBLICA': return 'ORG_PUB';\n    default: return 'HOGAR';\n  }\n}\n\nfunction getMandatoSepa(tipoEmpresa) {\n  const tipo = normalizeString(tipoEmpresa).toUpperCase();\n  return tipo === 'EMPRESA' ? 'B2B' : 'Core';\n}\n\nfunction getSupplyType(concepto) {\n  const upper = normalizeString(concepto).toUpperCase();\n  if (upper.includes('GAS')) return 'Gas';\n  return 'Electricidad';\n}\n\nfunction extractTarifaBomp(concepto) {\n  const match = normalizeString(concepto).match(/^([0-9.]+TD(?:VE)?)/i);\n  return match ? match[1].toUpperCase() : '';\n}\n\nfunction formatName(name) {\n  return normalizeString(name).replace(/\\s+/g, '_');\n}\n\nfunction matchProduct(concepto, productList) {\n  const conceptoUpper = normalizeString(concepto).toUpperCase();\n  const conceptoClean = conceptoUpper.replace(/^[0-9.]+TD(?:VE)?\\s*[-\\u2013]\\s*/i, '').trim();\n\n  let match = productList.find(p => p.nameUpper === conceptoUpper || p.nameUpper === conceptoClean);\n  if (match) return match;\n\n  match = productList.find(p => p.nameUpper.includes(conceptoClean));\n  if (match) return match;\n\n  match = productList.find(p => conceptoClean.includes(p.nameUpper));\n  if (match) return match;\n\n  const conceptoWords = conceptoClean.split(/[\\s_-]+/).filter(w => w.length > 1);\n  let bestMatch = null;\n  let bestScore = 0;\n\n  for (const product of productList) {\n    const productWords = product.nameUpper.split(/[\\s_-]+/).filter(w => w.length > 1);\n    let score = 0;\n    for (const cWord of conceptoWords) {\n      for (const pWord of productWords) {\n        if (cWord === pWord) score += 2;\n        else if (pWord.includes(cWord) || cWord.includes(pWord)) score += 1;\n      }\n    }\n    if (score > bestScore) {\n      bestScore = score;\n      bestMatch = product;\n    }\n  }\n\n  return bestScore >= 2 ? bestMatch : null;\n}\n\n// ── Resolve values ──\n\nconst customerCounty = getProvinceCode(nodoData.provincia);\nconst cupsCounty = getProvinceCode(nodoData.provincia_suministro);\nconst matchedProduct = matchProduct(nodoData.concepto, productList);\nconst wolfToken = $('Wolf Auth').item.json.data.token;\nconst nodoId = $('Set NODO ID').item.json.NODO_id;\n\n// FIRMA_DATE: use today's date (required by Wolf API)\nconst today = new Date();\nconst firmaDate = today.toISOString().split('T')[0];\n\n// Consumo: use individual periods if available, otherwise put total in P1\nconst consumoTotal = parseFloat(nodoData.consumo) || 0;\nconst consumo1 = parseFloat(nodoData.consumo_1) || 0;\nconst consumo2 = parseFloat(nodoData.consumo_2) || 0;\nconst consumo3 = parseFloat(nodoData.consumo_3) || 0;\nconst consumo4 = parseFloat(nodoData.consumo_4) || 0;\nconst consumo5 = parseFloat(nodoData.consumo_5) || 0;\nconst consumo6 = parseFloat(nodoData.consumo_6) || 0;\nconst hasIndividualConsumo = (consumo1 + consumo2 + consumo3 + consumo4 + consumo5 + consumo6) > 0;\n\n// Autoconsumo\nconst isAutoconsumo = normalizeString(nodoData.luz_autoconsumo).toUpperCase() === 'SI';\nconst obs = normalizeString(nodoData.observaciones).toLowerCase();\nconst hasBateriaVirtual = obs.includes('bateria virtual') || obs.includes('batería virtual');\n\n// Build description from NODO observaciones + metadata\nconst descParts = [];\ndescParts.push(`NODO ID: ${nodoId}`);\ndescParts.push(`Comercial: ${normalizeString(nodoData.comercial)}`);\nif (normalizeString(nodoData.comercializadora_saliente)) {\n  descParts.push(`Comercializadora saliente: ${normalizeString(nodoData.comercializadora_saliente)}`);\n}\nif (normalizeString(nodoData.observaciones)) {\n  descParts.push(`Obs: ${normalizeString(nodoData.observaciones)}`);\n}\nconst description = descParts.join(' | ');\n\nreturn [{\n  json: {\n    NODO_id: nodoId,\n    wolf_token: wolfToken,\n    nodo_raw: nodoData,\n\n    customer: {\n      NAME: formatName(nodoData.nombre_cliente || nodoData.persona_contacto),\n      VAT: normalizeString(nodoData.nif),\n      VAT_TYPE: detectVatType(nodoData.nif),\n      MANAGER_USER_CODE: 'CRM006',\n      ADDRESS: normalizeString(nodoData.direccion),\n      POSTAL_CODE: normalizeString(nodoData.cp),\n      CITY: normalizeString(nodoData.poblacion),\n      NOMBRE_POBLACION: normalizeString(nodoData.poblacion),\n      COUNTY: customerCounty,\n      COUNTRY: 'ES',\n      PHONE: normalizeString(nodoData.telefono) || normalizeString(nodoData.movil),\n      MOBILE_PHONE: normalizeString(nodoData.movil),\n      EMAIL: normalizeString(nodoData.email),\n      IBAN: normalizeString(nodoData.iban_contrato),\n      CNAE: normalizeString(nodoData.cnae_actividad)\n    },\n\n    contract: {\n      USER_ID: 'CRM006',\n      CONTRACT_TYPE: getContractType(nodoData.tipo_empresa),\n      SUPPLY: getSupplyType(nodoData.concepto),\n      CUPS: normalizeString(nodoData.cups),\n      PRODUCT: matchedProduct ? matchedProduct.code : '',\n      TARIFA_BOMP: extractTarifaBomp(nodoData.concepto),\n      TITULAR_NAME: formatName(nodoData.persona_contacto || nodoData.nombre_cliente),\n      TITULAR_VAT: normalizeString(nodoData.persona_contacto_nif || nodoData.nif),\n      EXTRA_INFO__TITULAR_PHONE: normalizeString(nodoData.movil),\n      IBAN: normalizeString(nodoData.iban_contrato),\n      MANDATO_SEPA: getMandatoSepa(nodoData.tipo_empresa),\n      CUPS_ADDRESS: normalizeString(nodoData.direccion_suministro),\n      CUPS_POSTAL_CODE: normalizeString(nodoData.cp_suministro),\n      CUPS_CITY: normalizeString(nodoData.poblacion_suministro),\n      CUPS_NOMBRE_POBLACION: normalizeString(nodoData.poblacion_suministro),\n      CUPS_COUNTY: cupsCounty,\n      // Activation: CICLO_LECTURA=1 means immediate\n      CICLO_LECTURA: nodoData.futura_activacion === 'CUANTO ANTES' ? '1' : '0',\n      // FIRMA_DATE is REQUIRED by Wolf API\n      FIRMA_DATE: firmaDate,\n      // Digital signature\n      digitalSignature: nodoData.firma_digital === '1' ? '1' : '0',\n      // SIPSDataReported=1 so Wolf uses the potencia/consumo we send\n      SIPSDataReported: '1',\n      // Potencias from NODO\n      POTENCIA_P1: normalizeString(nodoData.potencia_contratada_1),\n      POTENCIA_P2: normalizeString(nodoData.potencia_contratada_2),\n      POTENCIA_P3: normalizeString(nodoData.potencia_contratada_3),\n      POTENCIA_P4: normalizeString(nodoData.potencia_contratada_4),\n      POTENCIA_P5: normalizeString(nodoData.potencia_contratada_5),\n      POTENCIA_P6: normalizeString(nodoData.potencia_contratada_6),\n      // Consumos: use individual if available, otherwise total in P1\n      CONSUMO_P1: hasIndividualConsumo ? consumo1.toString() : consumoTotal.toString(),\n      CONSUMO_P2: hasIndividualConsumo ? consumo2.toString() : '0',\n      CONSUMO_P3: hasIndividualConsumo ? consumo3.toString() : '0',\n      CONSUMO_P4: hasIndividualConsumo ? consumo4.toString() : '0',\n      CONSUMO_P5: hasIndividualConsumo ? consumo5.toString() : '0',\n      CONSUMO_P6: hasIndividualConsumo ? consumo6.toString() : '0',\n      // Autoconsumo\n      EXTRA_INFO__INSTALACION_AUTOCONSUMO: isAutoconsumo ? '1' : '0',\n      // Bateria virtual\n      EXTRA_INFO__BATERIA_VIRTUAL: hasBateriaVirtual ? '1' : '0',\n      // Factura electronica\n      EXTRA_INFO__FACTURA_PAPEL: nodoData.fact_electronica === 'SI' ? '0' : '1',\n      EXTRA_INFO__NO_TRATAR_DATOS: '0',\n      EXTRA_INFO__NO_CEDER_DATOS: '0',\n      DESCRIPTION: description\n    },\n\n    matched_product: matchedProduct,\n    customer_county_resolved: customerCounty,\n    cups_county_resolved: cupsCounty,\n    firma_digital: nodoData.firma_digital === '1',\n    has_documents: (nodoData.documentacion || []).length > 0,\n    documents: nodoData.documentacion || []\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -411,7 +411,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Extract customer ID from creation response\nconst createResult = $input.item.json;\nconst prevData = $('Process Customer Check').item.json;\n\nif (createResult.status != 200) {\n  throw new Error(`Failed to create customer: ${JSON.stringify(createResult.error || createResult)}`);\n}\n\n// Wolf returns CODE directly\nconst customerId = createResult.data?.CODE || null;\n\nif (!customerId) {\n  throw new Error('Customer created but no ID returned');\n}\n\nreturn [{\n  json: {\n    ...prevData,\n    customer_id: customerId,\n    customer_created: true,\n    customer_creation_response: createResult\n  }\n}];"
+        "jsCode": "// Extract customer ID from creation response\nconst createResult = $input.item.json;\nconst prevData = $('Process Customer Check').item.json;\n\nif (createResult.status != 200) {\n  throw new Error(`Failed to create customer: ${JSON.stringify(createResult.error || createResult)}`);\n}\n\nconst customerId = createResult.data?.CODE || null;\n\nif (!customerId) {\n  throw new Error('Customer created but no ID returned');\n}\n\nreturn [{\n  json: {\n    ...prevData,\n    customer_id: customerId,\n    customer_created: true,\n    customer_creation_response: createResult\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -424,7 +424,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Pass through existing customer - just mark as not created\nconst data = $input.item.json;\n\nreturn [{\n  json: {\n    ...data,\n    customer_created: false\n  }\n}];"
+        "jsCode": "// Pass through existing customer - mark as not created\nconst data = $input.item.json;\n\nreturn [{\n  json: {\n    ...data,\n    customer_created: false\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -493,7 +493,7 @@
             },
             {
               "name": "EXTRA_INFO__TITULAR_PHONE",
-              "value": "={{ $json.contract['EXTRA_INFO__TITULAR_PHONE'] }}"
+              "value": "={{ $json.contract.EXTRA_INFO__TITULAR_PHONE }}"
             },
             {
               "name": "IBAN",
@@ -528,6 +528,10 @@
               "value": "={{ $json.contract.CICLO_LECTURA }}"
             },
             {
+              "name": "FIRMA_DATE",
+              "value": "={{ $json.contract.FIRMA_DATE }}"
+            },
+            {
               "name": "digitalSignature",
               "value": "={{ $json.contract.digitalSignature }}"
             },
@@ -536,16 +540,72 @@
               "value": "={{ $json.contract.SIPSDataReported }}"
             },
             {
+              "name": "POTENCIA_P1",
+              "value": "={{ $json.contract.POTENCIA_P1 }}"
+            },
+            {
+              "name": "POTENCIA_P2",
+              "value": "={{ $json.contract.POTENCIA_P2 }}"
+            },
+            {
+              "name": "POTENCIA_P3",
+              "value": "={{ $json.contract.POTENCIA_P3 }}"
+            },
+            {
+              "name": "POTENCIA_P4",
+              "value": "={{ $json.contract.POTENCIA_P4 }}"
+            },
+            {
+              "name": "POTENCIA_P5",
+              "value": "={{ $json.contract.POTENCIA_P5 }}"
+            },
+            {
+              "name": "POTENCIA_P6",
+              "value": "={{ $json.contract.POTENCIA_P6 }}"
+            },
+            {
+              "name": "CONSUMO_P1",
+              "value": "={{ $json.contract.CONSUMO_P1 }}"
+            },
+            {
+              "name": "CONSUMO_P2",
+              "value": "={{ $json.contract.CONSUMO_P2 }}"
+            },
+            {
+              "name": "CONSUMO_P3",
+              "value": "={{ $json.contract.CONSUMO_P3 }}"
+            },
+            {
+              "name": "CONSUMO_P4",
+              "value": "={{ $json.contract.CONSUMO_P4 }}"
+            },
+            {
+              "name": "CONSUMO_P5",
+              "value": "={{ $json.contract.CONSUMO_P5 }}"
+            },
+            {
+              "name": "CONSUMO_P6",
+              "value": "={{ $json.contract.CONSUMO_P6 }}"
+            },
+            {
+              "name": "EXTRA_INFO__INSTALACION_AUTOCONSUMO",
+              "value": "={{ $json.contract.EXTRA_INFO__INSTALACION_AUTOCONSUMO }}"
+            },
+            {
+              "name": "EXTRA_INFO__BATERIA_VIRTUAL",
+              "value": "={{ $json.contract.EXTRA_INFO__BATERIA_VIRTUAL }}"
+            },
+            {
               "name": "EXTRA_INFO__FACTURA_PAPEL",
-              "value": "={{ $json.contract['EXTRA_INFO__FACTURA_PAPEL'] }}"
+              "value": "={{ $json.contract.EXTRA_INFO__FACTURA_PAPEL }}"
             },
             {
               "name": "EXTRA_INFO__NO_TRATAR_DATOS",
-              "value": "={{ $json.contract['EXTRA_INFO__NO_TRATAR_DATOS'] }}"
+              "value": "={{ $json.contract.EXTRA_INFO__NO_TRATAR_DATOS }}"
             },
             {
               "name": "EXTRA_INFO__NO_CEDER_DATOS",
-              "value": "={{ $json.contract['EXTRA_INFO__NO_CEDER_DATOS'] }}"
+              "value": "={{ $json.contract.EXTRA_INFO__NO_CEDER_DATOS }}"
             },
             {
               "name": "DESCRIPTION",
@@ -566,7 +626,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Process contract creation result\nconst contractResult = $input.item.json;\n\n// Get previous data from either path (Use Existing Customer or Extract Customer ID)\nlet prevData;\ntry {\n  prevData = $('Extract Customer ID').item.json;\n} catch (e) {\n  prevData = $('Use Existing Customer').item.json;\n}\n\nconst success = contractResult.status == 200;\nlet contractId = null;\nlet errorMessage = null;\n\nif (success && contractResult.data?.objectId) {\n  contractId = contractResult.data.objectId;\n} else if (!success) {\n  errorMessage = JSON.stringify(contractResult.error || contractResult);\n}\n\nreturn [{\n  json: {\n    success,\n    NODO_id: prevData.NODO_id,\n    wolf_contract_id: contractId,\n    wolf_customer_id: prevData.customer_id,\n    customer_created: prevData.customer_created,\n    firma_digital: prevData.firma_digital,\n    has_documents: prevData.has_documents,\n    documents: prevData.documents,\n    wolf_token: prevData.wolf_token,\n    error: errorMessage,\n    contract_response: contractResult,\n    \n    // Debug info\n    matched_product: prevData.matched_product,\n    customer_county: prevData.customer_county_resolved,\n    cups_county: prevData.cups_county_resolved\n  }\n}];"
+        "jsCode": "// Process contract creation result\nconst contractResult = $input.item.json;\n\n// Get previous data from either path\nlet prevData;\ntry {\n  prevData = $('Extract Customer ID').item.json;\n} catch (e) {\n  prevData = $('Use Existing Customer').item.json;\n}\n\nconst success = contractResult.status == 200;\nlet contractId = null;\nlet errorMessage = null;\n\nif (success && contractResult.data?.objectId) {\n  contractId = contractResult.data.objectId;\n} else if (!success) {\n  errorMessage = JSON.stringify(contractResult.error || contractResult);\n}\n\nreturn [{\n  json: {\n    success,\n    NODO_id: prevData.NODO_id,\n    wolf_contract_id: contractId,\n    wolf_customer_id: prevData.customer_id,\n    customer_created: prevData.customer_created,\n    firma_digital: prevData.firma_digital,\n    has_documents: prevData.has_documents,\n    documents: prevData.documents,\n    wolf_token: prevData.wolf_token,\n    error: errorMessage,\n    contract_response: contractResult,\n    matched_product: prevData.matched_product,\n    customer_county: prevData.customer_county_resolved,\n    cups_county: prevData.cups_county_resolved\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -621,15 +681,6 @@
           },
           "conditions": [
             {
-              "id": "needs-docs-condition",
-              "leftValue": "={{ $json.firma_digital }}",
-              "rightValue": false,
-              "operator": {
-                "type": "boolean",
-                "operation": "equals"
-              }
-            },
-            {
               "id": "has-docs-condition",
               "leftValue": "={{ $json.has_documents }}",
               "rightValue": true,
@@ -655,6 +706,7 @@
     {
       "parameters": {
         "fieldToSplitOut": "documents",
+        "include": "allOtherFields",
         "options": {}
       },
       "type": "n8n-nodes-base.splitOut",
@@ -697,13 +749,87 @@
     },
     {
       "parameters": {
+        "jsCode": "// Map NODO document type to Wolf CRM file field name.\n// Wolf API file fields:\n//   VAT_FILE          = DNI/CIF\n//   INVOICE_FILE      = Factura\n//   ANEXO_RESIDENCIAL_FILE = Contrato/Anexo\n//   ESCRITURA_FILE    = Escritura\n//   ACTA_CCPP_FILE    = Acta en CCPP\n//   BOLETINCIE_FILE   = Boletin-CIE\n//   OTHER_FILE        = Otra documentacion\n//   UNIFICADA_FILE    = Doc. unificada\n\nconst item = $input.item;\nconst docTipo = (item.json.tipo || '').toUpperCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\nconst docName = (item.json.nombre_original || '').toUpperCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\n\nlet wolfField = 'OTHER_FILE';\n\nif (docTipo === 'CIF' || docTipo === 'DNI' || docName.includes('DNI') || docName.includes('CIF')) {\n  wolfField = 'VAT_FILE';\n} else if (docName.includes('FACTURA')) {\n  wolfField = 'INVOICE_FILE';\n} else if (docName.includes('CONTRATO') || docName.includes('ANEXO')) {\n  wolfField = 'ANEXO_RESIDENCIAL_FILE';\n} else if (docName.includes('ESCRITURA')) {\n  wolfField = 'ESCRITURA_FILE';\n} else if (docName.includes('BOLETIN') || docName.includes('CIE')) {\n  wolfField = 'BOLETINCIE_FILE';\n} else if (docName.includes('ACTA')) {\n  wolfField = 'ACTA_CCPP_FILE';\n}\n\n// Rename binary property from 'file' to the Wolf field name\n// so the HTTP Request node can reference it dynamically\nconst newBinary = {};\nif (item.binary && item.binary.file) {\n  newBinary[wolfField] = item.binary.file;\n}\n\nreturn [{\n  json: {\n    ...item.json,\n    wolf_field_name: wolfField,\n    doc_original_name: item.json.nombre_original,\n    doc_tipo: item.json.tipo\n  },\n  binary: newBinary\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        256
+      ],
+      "id": "f6dc7291-8862-4b22-8cf3-056eb2f8a804",
+      "name": "Map Doc Type"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.WOLF_API_URL || 'https://canallogos.v3.dev.partnertec.es/application/ws/v1/index.php' }}",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $json.wolf_token }}"
+            },
+            {
+              "name": "method",
+              "value": "set"
+            },
+            {
+              "name": "class",
+              "value": "Contract"
+            },
+            {
+              "name": "objectId",
+              "value": "={{ $json.wolf_contract_id }}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "={{ $json.wolf_field_name }}",
+              "inputDataFieldName": "={{ $json.wolf_field_name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        384,
+        256
+      ],
+      "id": "b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+      "name": "Upload Doc to Contract"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log the result of each document upload\nconst uploadResult = $input.item.json;\nconst prevJson = $('Map Doc Type').item.json;\n\nconst success = uploadResult.status == 200;\n\nreturn [{\n  json: {\n    upload_success: success,\n    wolf_field: prevJson.wolf_field_name,\n    doc_name: prevJson.doc_original_name,\n    doc_tipo: prevJson.doc_tipo,\n    wolf_contract_id: prevJson.wolf_contract_id,\n    NODO_id: prevJson.NODO_id,\n    error: success ? null : JSON.stringify(uploadResult.error || uploadResult),\n    response_status: uploadResult.status\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        256
+      ],
+      "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+      "name": "Log Upload Result"
+    },
+    {
+      "parameters": {
         "assignments": {
           "assignments": [
             {
-              "id": "doc-ready",
-              "name": "document_ready",
-              "value": "={{ true }}",
-              "type": "boolean"
+              "id": "success-no-docs",
+              "name": "status",
+              "value": "SUCCESS_NO_DOCS",
+              "type": "string"
+            },
+            {
+              "id": "success-msg",
+              "name": "message",
+              "value": "=Contract created successfully (ID: {{ $json.wolf_contract_id }}). No documents to upload.",
+              "type": "string"
             }
           ]
         },
@@ -712,11 +838,40 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        160,
-        256
+        -288,
+        432
       ],
-      "id": "f6dc7291-8862-4b22-8cf3-056eb2f8a804",
-      "name": "Prepare Document Upload"
+      "id": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
+      "name": "Success - No Docs"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fail-status",
+              "name": "status",
+              "value": "CONTRACT_CREATION_FAILED",
+              "type": "string"
+            },
+            {
+              "id": "fail-msg",
+              "name": "message",
+              "value": "=Contract creation failed for NODO ID: {{ $json.NODO_id }}. Error: {{ $json.error }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -512,
+        608
+      ],
+      "id": "d1e2f3a4-b5c6-4d7e-8f9a-0b1c2d3e4f5a",
+      "name": "Contract Failed"
     }
   ],
   "connections": {
@@ -955,7 +1110,13 @@
             "index": 0
           }
         ],
-        []
+        [
+          {
+            "node": "Contract Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Needs Document Upload?": {
@@ -963,6 +1124,13 @@
         [
           {
             "node": "Split Documents",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Success - No Docs",
             "type": "main",
             "index": 0
           }
@@ -984,7 +1152,29 @@
       "main": [
         [
           {
-            "node": "Prepare Document Upload",
+            "node": "Map Doc Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Doc Type": {
+      "main": [
+        [
+          {
+            "node": "Upload Doc to Contract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Doc to Contract": {
+      "main": [
+        [
+          {
+            "node": "Log Upload Result",
             "type": "main",
             "index": 0
           }
@@ -1041,7 +1231,7 @@
           "cp": "45500",
           "cp_suministro": "45526",
           "cups": "ES0021000007582106ES",
-          "direccion": "Avda PLAZA DE TOROS,  4,  2ºA",
+          "direccion": "Avda PLAZA DE TOROS,  4,  2\u00baA",
           "direccion_suministro": "NORTE  15",
           "email": "silviamelt@gmail.com",
           "estado": "TEMPORAL",
@@ -1065,7 +1255,7 @@
           "iban_contrato": "ES6600301057740000439271",
           "id_comercial": 1435,
           "id_usuario_telemarketing": "1169",
-          "kam": "Rosa María Molina Vivar",
+          "kam": "Rosa Mar\u00eda Molina Vivar",
           "luz_autoconsumo": "SI",
           "movil": "649784108",
           "nif": "03883939K",
@@ -1102,13 +1292,13 @@
             {
               "nombre_original": "FACTURA CLIENTE.pdf",
               "url_descarga": "/api/files/DOCUMENTACION/265997/ef3eb2cdceb57c791bc306ba9ebf8e2b.pdf",
-              "tipo": "DOCUMENTACIÓN",
+              "tipo": "DOCUMENTACI\u00d3N",
               "fecha": "2026-01-27 16:03:52"
             },
             {
               "nombre_original": "ANEXO AUTOCONSUMO.pdf",
               "url_descarga": "/api/files/DOCUMENTACION/265997/70bf5677228db4c3793f96a9273da493.pdf",
-              "tipo": "DOCUMENTACIÓN",
+              "tipo": "DOCUMENTACI\u00d3N",
               "fecha": "2026-01-27 16:04:06"
             }
           ],
@@ -1118,7 +1308,7 @@
               "id_usuario": 1435,
               "usuario": "ELECTRICIDAD SAJOY SL",
               "accion": "MODIFICAR",
-              "texto": "Modificación de datos"
+              "texto": "Modificaci\u00f3n de datos"
             },
             {
               "fecha": "2026-01-27 16:04:32",
@@ -1131,22 +1321,8 @@
               "fecha": "2026-01-27 16:04:32",
               "id_usuario": 1435,
               "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR LOGOS",
-              "texto": "Direccion suministro: 'Avda PLAZA DE TOROS,  4,  2ºA' => 'NORTE  15', Poblacion suministro: 'Torrijos' => 'Santo Domingo-Caudilla', Cp suministro: '45500' => '45526', Comercializadora saliente: '' => 'NATURGY', Id usuario telemarketing: '0' => '1169', Cups: '' => 'ES0021000007582106ES', Tarifa: '' => '2.0TD', Consumo: '0.0000' => '3200', Iban contrato: '' => 'ES6600301057740000439271', Futura activacion: '' => 'CUANTO ANTES', Firma digital: '0' => '1', Luz autoconsumo: '' => 'SI', Cambio comercializadora: '' => 'NO', Fact electronica: '' => 'SI', Potencia contratada 1: '' => '5.75', Potencia contratada 2: '' => '5.75', Potencia contratada 3: '' => '0.00', Potencia contratada 4: '' => '0.00', Potencia contratada 5: '' => '0.00', Potencia contratada 6: '' => '0.00', Fee potencia 1: '' => '0.00', Fee potencia 2: '' => '0.00', Fee potencia 3: '' => '0.00', Fee potencia 4: '' => '0.00', Fee potencia 5: '' => '0.00', Fee potencia 6: '' => '0.00', Consumo 1: '' => '0.00', Consumo 2: '' => '0.00', Consumo 3: '' => '0.00', Consumo 4: '' => '0.00', Consumo 5: '' => '0.00', Consumo 6: '' => '0.00', Fee consumo 1: '' => '0.00', Fee consumo 2: '' => '0.00', Fee consumo 3: '' => '0.00', Fee consumo 4: '' => '0.00', Fee consumo 5: '' => '0.00', Fee consumo 6: '' => '0.00'"
-            },
-            {
-              "fecha": "2026-01-27 16:04:32",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
               "accion": "SERVICIO INSERTADO",
               "texto": "SERVICIO: MANITAS"
-            },
-            {
-              "fecha": "2026-01-27 16:04:11",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "GUARDAR OBSERVACIONES",
-              "texto": "Autoconsumo con excedentes\nActivar bateria virtual"
             },
             {
               "fecha": "2026-01-27 16:04:06",
@@ -1168,62 +1344,6 @@
               "usuario": "ELECTRICIDAD SAJOY SL",
               "accion": "DOCUMENTACION INSERTADA",
               "texto": "DNI JOAQUIN.pdf (4904f409569f6e74e2c54431ebab561e.pdf) id_empresa: 265997; origen: escritorio"
-            },
-            {
-              "fecha": "2026-01-27 16:03:12",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "GUARDAR OBSERVACIONES",
-              "texto": "Autoconsumo con excedentes\nActivar bateria virtual"
-            },
-            {
-              "fecha": "2026-01-27 16:03:12",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR OPERACION INTERNO",
-              "texto": "Observaciones: '' => 'Autoconsumo con excedentes\nActivar bateria virtual'"
-            },
-            {
-              "fecha": "2026-01-27 16:01:03",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "GUARDAR CNAE",
-              "texto": "9820.- Actividades de los hogares como productores de servicios para uso propio - 9820"
-            },
-            {
-              "fecha": "2026-01-27 16:01:03",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR LOGOS",
-              "texto": "Cnae: '' => '9820.- Actividades de los hogares como productores de servicios para uso propio', Cnae actividad: '' => '9820'"
-            },
-            {
-              "fecha": "2026-01-27 15:59:40",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR LOGOS",
-              "texto": "Persona contacto: '' => 'JOAQUIN MAQUEDA RUIZ', Persona contacto nif: '' => '27/01/3939 06:59:40'"
-            },
-            {
-              "fecha": "2026-01-27 15:59:40",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR LOGOS",
-              "texto": "Consumo: '0.0000' => '', Direccion suministro: '' => 'Avda PLAZA DE TOROS,  4,  2ºA', Poblacion suministro: '' => 'Torrijos', Provincia suministro: '' => 'TOLEDO', Cp suministro: '' => '45500'"
-            },
-            {
-              "fecha": "2026-01-27 15:59:40",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "JERARQUIA RECARGADA",
-              "texto": "Jerarquia de usuarios cargada"
-            },
-            {
-              "fecha": "2026-01-27 15:59:40",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "ASIGNAR CLIENTE",
-              "texto": "CLIENTE 265997 ASIGNADO"
             },
             {
               "fecha": "2026-01-27 15:59:40",
