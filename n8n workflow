@@ -550,156 +550,16 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "={{ $vars.WOLF_API_URL || 'https://canallogos.v3.dev.partnertec.es/application/ws/v1/index.php' }}",
-        "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "token",
-              "value": "={{ $json.wolf_token }}"
-            },
-            {
-              "name": "method",
-              "value": "set"
-            },
-            {
-              "name": "class",
-              "value": "Contract"
-            },
-            {
-              "name": "USER_ID",
-              "value": "={{ $json.contract.USER_ID }}"
-            },
-            {
-              "name": "CUSTOMER_ID",
-              "value": "={{ $json.customer_id }}"
-            },
-            {
-              "name": "CONTRACT_TYPE",
-              "value": "={{ $json.contract.CONTRACT_TYPE }}"
-            },
-            {
-              "name": "SUPPLY",
-              "value": "={{ $json.contract.SUPPLY }}"
-            },
-            {
-              "name": "CUPS",
-              "value": "={{ $json.contract.CUPS }}"
-            },
-            {
-              "name": "PRODUCT",
-              "value": "={{ $json.contract.PRODUCT }}"
-            },
-            {
-              "name": "TARIFA_BOMP",
-              "value": "={{ $json.contract.TARIFA_BOMP }}"
-            },
-            {
-              "name": "TITULAR_NAME",
-              "value": "={{ $json.contract.TITULAR_NAME }}"
-            },
-            {
-              "name": "TITULAR_VAT",
-              "value": "={{ $json.contract.TITULAR_VAT }}"
-            },
-            {
-              "name": "EXTRA_INFO__TITULAR_PHONE",
-              "value": "={{ $json.contract['EXTRA_INFO__TITULAR_PHONE'] }}"
-            },
-            {
-              "name": "IBAN",
-              "value": "={{ $json.contract.IBAN }}"
-            },
-            {
-              "name": "MANDATO_SEPA",
-              "value": "={{ $json.contract.MANDATO_SEPA }}"
-            },
-            {
-              "name": "CUPS_ADDRESS",
-              "value": "={{ $json.contract.CUPS_ADDRESS }}"
-            },
-            {
-              "name": "CUPS_POSTAL_CODE",
-              "value": "={{ $json.contract.CUPS_POSTAL_CODE }}"
-            },
-            {
-              "name": "CUPS_CITY",
-              "value": "={{ $json.contract.CUPS_CITY }}"
-            },
-            {
-              "name": "CUPS_NOMBRE_POBLACION",
-              "value": "={{ $json.contract.CUPS_NOMBRE_POBLACION }}"
-            },
-            {
-              "name": "CUPS_COUNTY",
-              "value": "={{ $json.contract.CUPS_COUNTY }}"
-            },
-            {
-              "name": "CICLO_LECTURA",
-              "value": "={{ $json.contract.CICLO_LECTURA }}"
-            },
-            {
-              "name": "digitalSignature",
-              "value": "={{ $json.contract.digitalSignature }}"
-            },
-            {
-              "name": "SIPSDataReported",
-              "value": "={{ $json.contract.SIPSDataReported }}"
-            },
-            {
-              "name": "EXTRA_INFO__FACTURA_PAPEL",
-              "value": "={{ $json.contract['EXTRA_INFO__FACTURA_PAPEL'] }}"
-            },
-            {
-              "name": "EXTRA_INFO__NO_TRATAR_DATOS",
-              "value": "={{ $json.contract['EXTRA_INFO__NO_TRATAR_DATOS'] }}"
-            },
-            {
-              "name": "EXTRA_INFO__NO_CEDER_DATOS",
-              "value": "={{ $json.contract['EXTRA_INFO__NO_CEDER_DATOS'] }}"
-            },
-            {
-              "name": "DESCRIPTION",
-              "value": "={{ $json.contract.DESCRIPTION }}"
-            },
-            {
-              "name": "FIRMA_DATE",
-              "value": "={{ $today.format('yyyy-MM-dd')}}"
-            },
-            {
-              "parameterType": "formBinaryData",
-              "name": "VAT_FILE",
-              "inputDataFieldName": "VAT_FILE"
-            },
-            {
-              "parameterType": "formBinaryData",
-              "name": "INVOICE_FILE",
-              "inputDataFieldName": "INVOICE_FILE"
-            },
-            {
-              "parameterType": "formBinaryData",
-              "name": "ANEXO_RESIDENCIAL_FILE",
-              "inputDataFieldName": "ANEXO_RESIDENCIAL_FILE"
-            },
-            {
-              "parameterType": "formBinaryData",
-              "name": "OTHER_FILE",
-              "inputDataFieldName": "OTHER_FILE"
-            }
-          ]
-        },
-        "options": {}
+        "jsCode": "// Make WolfCRM contract creation request with conditional file uploads\nconst item = $input.first();\nconst FormData = require('form-data');\nconst axios = require('axios');\n\nconst apiUrl = $vars.WOLF_API_URL || 'https://canallogos.v3.dev.partnertec.es/application/ws/v1/index.php';\n\n// Build form data with all contract fields\nconst formData = new FormData();\n\n// Authentication and method\nformData.append('token', item.json.wolf_token);\nformData.append('method', 'set');\nformData.append('class', 'Contract');\n\n// Contract fields\nconst contract = item.json.contract;\nformData.append('USER_ID', contract.USER_ID);\nformData.append('CUSTOMER_ID', item.json.customer_id);\nformData.append('CONTRACT_TYPE', contract.CONTRACT_TYPE);\nformData.append('SUPPLY', contract.SUPPLY);\nformData.append('CUPS', contract.CUPS);\nformData.append('PRODUCT', contract.PRODUCT);\nformData.append('TARIFA_BOMP', contract.TARIFA_BOMP);\nformData.append('TITULAR_NAME', contract.TITULAR_NAME);\nformData.append('TITULAR_VAT', contract.TITULAR_VAT);\nformData.append('EXTRA_INFO__TITULAR_PHONE', contract['EXTRA_INFO__TITULAR_PHONE']);\nformData.append('IBAN', contract.IBAN);\nformData.append('MANDATO_SEPA', contract.MANDATO_SEPA);\nformData.append('CUPS_ADDRESS', contract.CUPS_ADDRESS);\nformData.append('CUPS_POSTAL_CODE', contract.CUPS_POSTAL_CODE);\nformData.append('CUPS_CITY', contract.CUPS_CITY);\nformData.append('CUPS_NOMBRE_POBLACION', contract.CUPS_NOMBRE_POBLACION);\nformData.append('CUPS_COUNTY', contract.CUPS_COUNTY);\nformData.append('CICLO_LECTURA', contract.CICLO_LECTURA);\nformData.append('digitalSignature', contract.digitalSignature);\nformData.append('SIPSDataReported', contract.SIPSDataReported);\nformData.append('EXTRA_INFO__FACTURA_PAPEL', contract['EXTRA_INFO__FACTURA_PAPEL']);\nformData.append('EXTRA_INFO__NO_TRATAR_DATOS', contract['EXTRA_INFO__NO_TRATAR_DATOS']);\nformData.append('EXTRA_INFO__NO_CEDER_DATOS', contract['EXTRA_INFO__NO_CEDER_DATOS']);\nformData.append('DESCRIPTION', contract.DESCRIPTION);\nformData.append('FIRMA_DATE', new Date().toISOString().split('T')[0]);\n\n// Conditionally add binary files only if they exist\nif (item.binary) {\n  const fileFields = ['VAT_FILE', 'INVOICE_FILE', 'ANEXO_RESIDENCIAL_FILE', 'OTHER_FILE'];\n  \n  for (const fieldName of fileFields) {\n    if (item.binary[fieldName]) {\n      const file = item.binary[fieldName];\n      formData.append(fieldName, Buffer.from(file.data, 'base64'), {\n        filename: file.fileName || `${fieldName}.pdf`,\n        contentType: file.mimeType || 'application/pdf'\n      });\n    }\n  }\n}\n\n// Make the HTTP request\ntry {\n  const response = await axios.post(apiUrl, formData, {\n    headers: formData.getHeaders()\n  });\n  \n  return [{\n    json: response.data\n  }];\n} catch (error) {\n  return [{\n    json: {\n      status: error.response?.status || 500,\n      error: error.message,\n      data: error.response?.data || null\n    }\n  }];\n}"
       },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
         -128,
         448
       ],
-      "id": "create-contract-with-files",
-      "name": "Create Contract with Files"
+      "id": "prepare-contract-request",
+      "name": "Create Contract with Files (Code)"
     },
     {
       "parameters": {
@@ -708,7 +568,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        96,
+        64,
         448
       ],
       "id": "process-result",
@@ -986,14 +846,14 @@
       "main": [
         [
           {
-            "node": "Create Contract with Files",
+            "node": "Create Contract with Files (Code)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Create Contract with Files": {
+    "Create Contract with Files (Code)": {
       "main": [
         [
           {
