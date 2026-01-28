@@ -36,12 +36,6 @@
               "name": "NODO_id",
               "value": "={{ $json.body.id }}",
               "type": "string"
-            },
-            {
-              "id": "1bd575da-8126-4ab5-9a26-21b8427538e4",
-              "name": "",
-              "value": "",
-              "type": "string"
             }
           ]
         },
@@ -437,6 +431,125 @@
     },
     {
       "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1440,
+        448
+      ],
+      "id": "merge-customer-paths",
+      "name": "Merge Customer Paths"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "has-docs-condition",
+              "leftValue": "={{ $json.has_documents }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1232,
+        448
+      ],
+      "id": "check-has-documents",
+      "name": "Has Documents?"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "documents",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        352
+      ],
+      "id": "split-documents",
+      "name": "Split Documents"
+    },
+    {
+      "parameters": {
+        "url": "=https://gaiag.nodogestion.com{{ $json.url_descarga }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -800,
+        352
+      ],
+      "id": "download-document",
+      "name": "Download Document",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "8Vg7TyHllfv2EefZ",
+          "name": "NODO - Prod"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Map NODO document type to WolfCRM field and prepare binary data\nconst items = $input.all();\nconst parentData = $('Has Documents?').first().json;\n\n// Helper function to map document type\nfunction mapDocType(tipo, filename) {\n  const tipoUpper = (tipo || '').toUpperCase();\n  const filenameUpper = (filename || '').toUpperCase();\n  \n  // VAT_FILE: DNI, CIF, NIE documents\n  if (tipoUpper === 'CIF' || filenameUpper.includes('DNI') || filenameUpper.includes('CIF') || filenameUpper.includes('NIE')) {\n    return 'VAT_FILE';\n  }\n  \n  // INVOICE_FILE: Invoices/Bills\n  if (filenameUpper.includes('FACTURA') || filenameUpper.includes('INVOICE') || filenameUpper.includes('BILL')) {\n    return 'INVOICE_FILE';\n  }\n  \n  // ANEXO_RESIDENCIAL_FILE: Contract annexes\n  if (filenameUpper.includes('ANEXO') || filenameUpper.includes('CONTRATO') || filenameUpper.includes('CONTRACT')) {\n    return 'ANEXO_RESIDENCIAL_FILE';\n  }\n  \n  // Default: OTHER_FILE\n  return 'OTHER_FILE';\n}\n\n// Process each downloaded document\nconst processedDocs = items.map((item, index) => {\n  const docMeta = parentData.documents[index] || {};\n  const wolfField = mapDocType(docMeta.tipo, docMeta.nombre_original);\n  \n  return {\n    wolfField,\n    filename: docMeta.nombre_original,\n    tipo: docMeta.tipo,\n    binaryData: item.binary\n  };\n});\n\n// Group documents by WolfCRM field (in case we have multiple, use first one)\nconst documentMap = {};\nprocessedDocs.forEach(doc => {\n  if (!documentMap[doc.wolfField]) {\n    documentMap[doc.wolfField] = doc;\n  }\n});\n\nreturn [{\n  json: {\n    ...parentData,\n    document_map: documentMap,\n    total_documents: processedDocs.length,\n    mapped_fields: Object.keys(documentMap)\n  },\n  binary: processedDocs.reduce((acc, doc, index) => {\n    acc[doc.wolfField] = Object.values(doc.binaryData)[0];\n    return acc;\n  }, {})\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -576,
+        352
+      ],
+      "id": "map-documents",
+      "name": "Map Documents to Wolf Fields"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -352,
+        448
+      ],
+      "id": "merge-with-documents",
+      "name": "Merge With Documents"
+    },
+    {
+      "parameters": {
         "method": "POST",
         "url": "={{ $vars.WOLF_API_URL || 'https://canallogos.v3.dev.partnertec.es/application/ws/v1/index.php' }}",
         "sendBody": true,
@@ -477,7 +590,7 @@
             },
             {
               "name": "PRODUCT",
-              "value": "BETA FIJO NEGOCIO"
+              "value": "={{ $json.contract.PRODUCT }}"
             },
             {
               "name": "TARIFA_BOMP",
@@ -554,170 +667,30 @@
             {
               "name": "FIRMA_DATE",
               "value": "={{ $today.format('yyyy-MM-dd')}}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -1168,
-        448
-      ],
-      "id": "ccb723ec-08b1-4f2b-8162-12e1d95bded4",
-      "name": "Create Contract"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Process contract creation result\nconst contractResult = $input.item.json;\n\n// Get previous data from either path\nlet prevData;\ntry {\n  prevData = $('Extract Customer ID').first().json;\n} catch (e) {\n  try {\n    prevData = $('Use Existing Customer').first().json;\n  } catch (e2) {\n    prevData = {};\n  }\n}\n\nconst success = contractResult.status == 200;\nconst contractId = contractResult.data?.objectId || null;\nconst contractCode = contractResult.data?.CODE || null;\n\nreturn [{\n  json: {\n    success,\n    NODO_id: prevData.NODO_id,\n    wolf_contract_id: contractId,\n    wolf_contract_code: contractCode,\n    wolf_customer_id: prevData.customer_id,\n    customer_created: prevData.customer_created || false,\n    firma_digital: prevData.firma_digital,\n    has_documents: prevData.has_documents,\n    documents: prevData.documents,\n    wolf_token: prevData.wolf_token,\n    error: success ? null : JSON.stringify(contractResult),\n    contract_response: contractResult\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -944,
-        448
-      ],
-      "id": "dfc4d79e-4171-4f90-b986-e44e6ce7f7e7",
-      "name": "Process Contract Result"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "success-condition",
-              "leftValue": "={{ $json.success }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -736,
-        448
-      ],
-      "id": "0ce5b4bc-d1be-414f-aa9e-70de9fa559e3",
-      "name": "Contract Created?"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "has-docs-condition",
-              "leftValue": "={{ $json.has_documents }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -512,
-        320
-      ],
-      "id": "ad8d7e01-516d-44ab-bd9a-ba4b2067f829",
-      "name": "Needs Document Upload?"
-    },
-    {
-      "parameters": {
-        "fieldToSplitOut": "documents",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
-      "position": [
-        -288,
-        256
-      ],
-      "id": "dbfc5b6a-95cd-4823-b2bc-ccaf2ac559a9",
-      "name": "Split Documents"
-    },
-    {
-      "parameters": {
-        "url": "=https://gaiag.nodogestion.com{{ $json.url_descarga }}",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBasicAuth",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "file",
-              "outputPropertyName": "file"
-            }
-          }
-        }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -64,
-        256
-      ],
-      "id": "15117a90-421e-4072-b33c-4ad5814d81d5",
-      "name": "Download Document",
-      "credentials": {
-        "httpBasicAuth": {
-          "id": "8Vg7TyHllfv2EefZ",
-          "name": "NODO - Prod"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://canallogos.v3.dev.partnertec.es/application/ws/v1/index.php",
-        "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "token",
-              "value": "={{ $json.wolf_token }}"
-            },
-            {
-              "name": "method",
-              "value": "set"
-            },
-            {
-              "name": "class",
-              "value": "Contract"
-            },
-            {
-              "name": "objectId",
-              "value": "={{ $json.wolf_contract_id }}"
             },
             {
               "parameterType": "formBinaryData",
-              "name": "file",
-              "inputDataFieldName": "file"
+              "name": "VAT_FILE",
+              "inputDataFieldName": "={{ $json.mapped_fields?.includes('VAT_FILE') ? 'VAT_FILE' : '' }}",
+              "disabled": "={{ !$json.mapped_fields?.includes('VAT_FILE') }}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "INVOICE_FILE",
+              "inputDataFieldName": "={{ $json.mapped_fields?.includes('INVOICE_FILE') ? 'INVOICE_FILE' : '' }}",
+              "disabled": "={{ !$json.mapped_fields?.includes('INVOICE_FILE') }}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "ANEXO_RESIDENCIAL_FILE",
+              "inputDataFieldName": "={{ $json.mapped_fields?.includes('ANEXO_RESIDENCIAL_FILE') ? 'ANEXO_RESIDENCIAL_FILE' : '' }}",
+              "disabled": "={{ !$json.mapped_fields?.includes('ANEXO_RESIDENCIAL_FILE') }}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "OTHER_FILE",
+              "inputDataFieldName": "={{ $json.mapped_fields?.includes('OTHER_FILE') ? 'OTHER_FILE' : '' }}",
+              "disabled": "={{ !$json.mapped_fields?.includes('OTHER_FILE') }}"
             }
           ]
         },
@@ -726,37 +699,24 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1072,
-        176
+        -128,
+        448
       ],
-      "id": "31a86a3c-2259-4b0d-811c-33a7c7d67275",
-      "name": "Check Customer Exists1"
+      "id": "create-contract-with-files",
+      "name": "Create Contract with Files"
     },
     {
       "parameters": {
-        "jsCode": "// Map NODO document type to Wolf file field\nconst item = $input.item;\nconst doc = item.json;\nconst binaryData = item.binary || {};\n\n// Get the binary key\nconst binaryKey = Object.keys(binaryData)[0];\n\nif (!binaryKey) {\n  throw new Error(`No binary data found for document: ${doc.nombre_original}`);\n}\n\n// Map NODO tipo to Wolf field name\nfunction mapDocType(tipo, filename) {\n  const tipoUpper = (tipo || '').toUpperCase();\n  const filenameUpper = (filename || '').toUpperCase();\n  \n  if (tipoUpper === 'CIF' || filenameUpper.includes('DNI') || filenameUpper.includes('CIF')) {\n    return 'VAT_FILE';\n  }\n  if (filenameUpper.includes('FACTURA')) {\n    return 'INVOICE_FILE';\n  }\n  return 'OTHER_FILE';\n}\n\nconst wolfField = mapDocType(doc.tipo, doc.nombre_original);\n\n// Get contract ID from earlier in the flow\nconst contractId = $('Process Contract Result').first().json.wolf_contract_id;\nconst wolfToken = $('Wolf Auth').first().json.data.token;\n\nreturn [{\n  json: {\n    wolf_field: wolfField,\n    wolf_contract_id: contractId,\n    wolf_token: wolfToken,\n    filename: doc.nombre_original,\n    tipo_original: doc.tipo,\n    binary_key: binaryKey\n  },\n  binary: binaryData\n}];"
+        "jsCode": "// Process contract creation result\nconst contractResult = $input.item.json;\nconst prevData = $('Merge With Documents').first().json;\n\nconst success = contractResult.status == 200;\nconst contractId = contractResult.data?.objectId || null;\nconst contractCode = contractResult.data?.CODE || null;\n\nreturn [{\n  json: {\n    success,\n    NODO_id: prevData.NODO_id,\n    wolf_contract_id: contractId,\n    wolf_contract_code: contractCode,\n    wolf_customer_id: prevData.customer_id,\n    customer_created: prevData.customer_created || false,\n    documents_uploaded: prevData.total_documents || 0,\n    uploaded_fields: prevData.mapped_fields || [],\n    error: success ? null : JSON.stringify(contractResult),\n    contract_response: contractResult\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        592,
-        176
+        96,
+        448
       ],
-      "id": "77330738-77a1-437e-b705-2f168e7d2059",
-      "name": "Prepare Document Upload1"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Merge downloaded binary with original document metadata\nconst items = $input.all();\n\nreturn items.map((item, index) => {\n  // Get original document info from Split Documents\n  const originalDocs = $('Split Documents').all();\n  const originalDoc = originalDocs[index]?.json || {};\n  \n  return {\n    json: {\n      nombre_original: originalDoc.nombre_original || item.json.nombre_original,\n      tipo: originalDoc.tipo || item.json.tipo,\n      url_descarga: originalDoc.url_descarga || item.json.url_descarga,\n      // Keep any other fields from download\n      ...item.json\n    },\n    binary: item.binary\n  };\n});"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        240,
-        304
-      ],
-      "id": "b7120405-a6ef-478c-85bc-2f017d7fb81c",
-      "name": "Merge Document Data"
+      "id": "process-result",
+      "name": "Process Contract Result"
     }
   ],
   "connections": {
@@ -946,7 +906,7 @@
       "main": [
         [
           {
-            "node": "Create Contract",
+            "node": "Merge Customer Paths",
             "type": "main",
             "index": 0
           }
@@ -957,52 +917,36 @@
       "main": [
         [
           {
-            "node": "Create Contract",
+            "node": "Merge Customer Paths",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Create Contract": {
+    "Merge Customer Paths": {
       "main": [
         [
           {
-            "node": "Process Contract Result",
+            "node": "Has Documents?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Process Contract Result": {
-      "main": [
-        [
-          {
-            "node": "Contract Created?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Contract Created?": {
-      "main": [
-        [
-          {
-            "node": "Needs Document Upload?",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        []
-      ]
-    },
-    "Needs Document Upload?": {
+    "Has Documents?": {
       "main": [
         [
           {
             "node": "Split Documents",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge With Documents",
             "type": "main",
             "index": 0
           }
@@ -1024,29 +968,40 @@
       "main": [
         [
           {
-            "node": "Merge Document Data",
+            "node": "Map Documents to Wolf Fields",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Prepare Document Upload1": {
+    "Map Documents to Wolf Fields": {
       "main": [
         [
           {
-            "node": "Check Customer Exists1",
+            "node": "Merge With Documents",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge With Documents": {
+      "main": [
+        [
+          {
+            "node": "Create Contract with Files",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Merge Document Data": {
+    "Create Contract with Files": {
       "main": [
         [
           {
-            "node": "Prepare Document Upload1",
+            "node": "Process Contract Result",
             "type": "main",
             "index": 0
           }
@@ -1181,118 +1136,6 @@
               "usuario": "ELECTRICIDAD SAJOY SL",
               "accion": "MODIFICAR",
               "texto": "Modificación de datos"
-            },
-            {
-              "fecha": "2026-01-27 16:04:32",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR OPERACION INTERNO",
-              "texto": "Observaciones: 'Autoconsumo con excedentes\nActivar bateria virtual' => 'Autoconsumo con excedentes\r\nActivar bateria virtual', Comisiones porcentaje: '0.00' => '80', Concepto 1: '' => '2.0TD - ZETA 10', Id op operacion: '0' => '26750180', Concepto 2: '' => '0 - 5.000 KWH'"
-            },
-            {
-              "fecha": "2026-01-27 16:04:32",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR LOGOS",
-              "texto": "Direccion suministro: 'Avda PLAZA DE TOROS,  4,  2ºA' => 'NORTE  15', Poblacion suministro: 'Torrijos' => 'Santo Domingo-Caudilla', Cp suministro: '45500' => '45526', Comercializadora saliente: '' => 'NATURGY', Id usuario telemarketing: '0' => '1169', Cups: '' => 'ES0021000007582106ES', Tarifa: '' => '2.0TD', Consumo: '0.0000' => '3200', Iban contrato: '' => 'ES6600301057740000439271', Futura activacion: '' => 'CUANTO ANTES', Firma digital: '0' => '1', Luz autoconsumo: '' => 'SI', Cambio comercializadora: '' => 'NO', Fact electronica: '' => 'SI', Potencia contratada 1: '' => '5.75', Potencia contratada 2: '' => '5.75', Potencia contratada 3: '' => '0.00', Potencia contratada 4: '' => '0.00', Potencia contratada 5: '' => '0.00', Potencia contratada 6: '' => '0.00', Fee potencia 1: '' => '0.00', Fee potencia 2: '' => '0.00', Fee potencia 3: '' => '0.00', Fee potencia 4: '' => '0.00', Fee potencia 5: '' => '0.00', Fee potencia 6: '' => '0.00', Consumo 1: '' => '0.00', Consumo 2: '' => '0.00', Consumo 3: '' => '0.00', Consumo 4: '' => '0.00', Consumo 5: '' => '0.00', Consumo 6: '' => '0.00', Fee consumo 1: '' => '0.00', Fee consumo 2: '' => '0.00', Fee consumo 3: '' => '0.00', Fee consumo 4: '' => '0.00', Fee consumo 5: '' => '0.00', Fee consumo 6: '' => '0.00'"
-            },
-            {
-              "fecha": "2026-01-27 16:04:32",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "SERVICIO INSERTADO",
-              "texto": "SERVICIO: MANITAS"
-            },
-            {
-              "fecha": "2026-01-27 16:04:11",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "GUARDAR OBSERVACIONES",
-              "texto": "Autoconsumo con excedentes\nActivar bateria virtual"
-            },
-            {
-              "fecha": "2026-01-27 16:04:06",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "DOCUMENTACION INSERTADA",
-              "texto": "ANEXO AUTOCONSUMO.pdf (70bf5677228db4c3793f96a9273da493.pdf) id_empresa: 265997; origen: escritorio"
-            },
-            {
-              "fecha": "2026-01-27 16:03:52",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "DOCUMENTACION INSERTADA",
-              "texto": "FACTURA CLIENTE.pdf (ef3eb2cdceb57c791bc306ba9ebf8e2b.pdf) id_empresa: 265997; origen: escritorio"
-            },
-            {
-              "fecha": "2026-01-27 16:03:33",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "DOCUMENTACION INSERTADA",
-              "texto": "DNI JOAQUIN.pdf (4904f409569f6e74e2c54431ebab561e.pdf) id_empresa: 265997; origen: escritorio"
-            },
-            {
-              "fecha": "2026-01-27 16:03:12",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "GUARDAR OBSERVACIONES",
-              "texto": "Autoconsumo con excedentes\nActivar bateria virtual"
-            },
-            {
-              "fecha": "2026-01-27 16:03:12",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR OPERACION INTERNO",
-              "texto": "Observaciones: '' => 'Autoconsumo con excedentes\nActivar bateria virtual'"
-            },
-            {
-              "fecha": "2026-01-27 16:01:03",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "GUARDAR CNAE",
-              "texto": "9820.- Actividades de los hogares como productores de servicios para uso propio - 9820"
-            },
-            {
-              "fecha": "2026-01-27 16:01:03",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR LOGOS",
-              "texto": "Cnae: '' => '9820.- Actividades de los hogares como productores de servicios para uso propio', Cnae actividad: '' => '9820'"
-            },
-            {
-              "fecha": "2026-01-27 15:59:40",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR LOGOS",
-              "texto": "Persona contacto: '' => 'JOAQUIN MAQUEDA RUIZ', Persona contacto nif: '' => '27/01/3939 06:59:40'"
-            },
-            {
-              "fecha": "2026-01-27 15:59:40",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "MODIFICAR LOGOS",
-              "texto": "Consumo: '0.0000' => '', Direccion suministro: '' => 'Avda PLAZA DE TOROS,  4,  2ºA', Poblacion suministro: '' => 'Torrijos', Provincia suministro: '' => 'TOLEDO', Cp suministro: '' => '45500'"
-            },
-            {
-              "fecha": "2026-01-27 15:59:40",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "JERARQUIA RECARGADA",
-              "texto": "Jerarquia de usuarios cargada"
-            },
-            {
-              "fecha": "2026-01-27 15:59:40",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "ASIGNAR CLIENTE",
-              "texto": "CLIENTE 265997 ASIGNADO"
-            },
-            {
-              "fecha": "2026-01-27 15:59:40",
-              "id_usuario": 1435,
-              "usuario": "ELECTRICIDAD SAJOY SL",
-              "accion": "NUEVO",
-              "texto": "LOGOS"
             }
           ]
         }
