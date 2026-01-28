@@ -522,7 +522,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Map NODO document type to WolfCRM field and prepare binary data\nconst items = $input.all();\nconst parentData = $('Has Documents?').first().json;\n\n// Helper function to map document type\nfunction mapDocType(tipo, filename) {\n  const tipoUpper = (tipo || '').toUpperCase();\n  const filenameUpper = (filename || '').toUpperCase();\n  \n  // VAT_FILE: DNI, CIF, NIE documents\n  if (tipoUpper === 'CIF' || filenameUpper.includes('DNI') || filenameUpper.includes('CIF') || filenameUpper.includes('NIE')) {\n    return 'VAT_FILE';\n  }\n  \n  // INVOICE_FILE: Invoices/Bills\n  if (filenameUpper.includes('FACTURA') || filenameUpper.includes('INVOICE') || filenameUpper.includes('BILL')) {\n    return 'INVOICE_FILE';\n  }\n  \n  // ANEXO_RESIDENCIAL_FILE: Contract annexes\n  if (filenameUpper.includes('ANEXO') || filenameUpper.includes('CONTRATO') || filenameUpper.includes('CONTRACT')) {\n    return 'ANEXO_RESIDENCIAL_FILE';\n  }\n  \n  // Default: OTHER_FILE\n  return 'OTHER_FILE';\n}\n\n// Process each downloaded document\nconst processedDocs = items.map((item, index) => {\n  const docMeta = parentData.documents[index] || {};\n  const wolfField = mapDocType(docMeta.tipo, docMeta.nombre_original);\n  \n  return {\n    wolfField,\n    filename: docMeta.nombre_original,\n    tipo: docMeta.tipo,\n    binaryData: item.binary\n  };\n});\n\n// Group documents by WolfCRM field (in case we have multiple, use first one)\nconst documentMap = {};\nprocessedDocs.forEach(doc => {\n  if (!documentMap[doc.wolfField]) {\n    documentMap[doc.wolfField] = doc;\n  }\n});\n\nreturn [{\n  json: {\n    ...parentData,\n    document_map: documentMap,\n    total_documents: processedDocs.length,\n    mapped_fields: Object.keys(documentMap)\n  },\n  binary: processedDocs.reduce((acc, doc, index) => {\n    acc[doc.wolfField] = Object.values(doc.binaryData)[0];\n    return acc;\n  }, {})\n}];"
+        "jsCode": "// Map downloaded documents to WolfCRM fields and combine with contract data\nconst items = $input.all();\n\n// Get the contract/customer data from earlier\nconst contractData = $('Merge Customer Paths').first().json;\n\n// Get document metadata from the original NODO data\nconst nodoDocuments = contractData.documents || [];\n\n// Helper function to map document type\nfunction mapDocType(tipo, filename) {\n  const tipoUpper = (tipo || '').toUpperCase();\n  const filenameUpper = (filename || '').toUpperCase();\n  \n  // VAT_FILE: DNI, CIF, NIE documents\n  if (tipoUpper === 'CIF' || filenameUpper.includes('DNI') || filenameUpper.includes('CIF') || filenameUpper.includes('NIE')) {\n    return 'VAT_FILE';\n  }\n  \n  // INVOICE_FILE: Invoices/Bills\n  if (filenameUpper.includes('FACTURA') || filenameUpper.includes('INVOICE') || filenameUpper.includes('BILL')) {\n    return 'INVOICE_FILE';\n  }\n  \n  // ANEXO_RESIDENCIAL_FILE: Contract annexes\n  if (filenameUpper.includes('ANEXO') || filenameUpper.includes('CONTRATO') || filenameUpper.includes('CONTRACT')) {\n    return 'ANEXO_RESIDENCIAL_FILE';\n  }\n  \n  // Default: don't include - skip OTHER_FILE\n  return null;\n}\n\n// Build binary data object with only mapped files\nconst binaryData = {};\nitems.forEach((item, index) => {\n  const docMeta = nodoDocuments[index] || {};\n  const wolfField = mapDocType(docMeta.tipo, docMeta.nombre_original);\n  \n  // Only add if we have a valid field mapping AND binary data exists\n  if (wolfField && item.binary && Object.keys(item.binary).length > 0) {\n    const firstBinaryKey = Object.keys(item.binary)[0];\n    binaryData[wolfField] = item.binary[firstBinaryKey];\n  }\n});\n\nreturn [{\n  json: contractData,\n  binary: binaryData\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -535,40 +535,165 @@
     },
     {
       "parameters": {
-        "mode": "combine",
-        "combineBy": "combineAll",
+        "method": "POST",
+        "url": "={{ $vars.WOLF_API_URL || 'https://canallogos.v3.dev.partnertec.es/application/ws/v1/index.php' }}",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $json.wolf_token }}"
+            },
+            {
+              "name": "method",
+              "value": "set"
+            },
+            {
+              "name": "class",
+              "value": "Contract"
+            },
+            {
+              "name": "USER_ID",
+              "value": "={{ $json.contract.USER_ID }}"
+            },
+            {
+              "name": "CUSTOMER_ID",
+              "value": "={{ $json.customer_id }}"
+            },
+            {
+              "name": "CONTRACT_TYPE",
+              "value": "={{ $json.contract.CONTRACT_TYPE }}"
+            },
+            {
+              "name": "SUPPLY",
+              "value": "={{ $json.contract.SUPPLY }}"
+            },
+            {
+              "name": "CUPS",
+              "value": "={{ $json.contract.CUPS }}"
+            },
+            {
+              "name": "PRODUCT",
+              "value": "={{ $json.contract.PRODUCT }}"
+            },
+            {
+              "name": "TARIFA_BOMP",
+              "value": "={{ $json.contract.TARIFA_BOMP }}"
+            },
+            {
+              "name": "TITULAR_NAME",
+              "value": "={{ $json.contract.TITULAR_NAME }}"
+            },
+            {
+              "name": "TITULAR_VAT",
+              "value": "={{ $json.contract.TITULAR_VAT }}"
+            },
+            {
+              "name": "EXTRA_INFO__TITULAR_PHONE",
+              "value": "={{ $json.contract['EXTRA_INFO__TITULAR_PHONE'] }}"
+            },
+            {
+              "name": "IBAN",
+              "value": "={{ $json.contract.IBAN }}"
+            },
+            {
+              "name": "MANDATO_SEPA",
+              "value": "={{ $json.contract.MANDATO_SEPA }}"
+            },
+            {
+              "name": "CUPS_ADDRESS",
+              "value": "={{ $json.contract.CUPS_ADDRESS }}"
+            },
+            {
+              "name": "CUPS_POSTAL_CODE",
+              "value": "={{ $json.contract.CUPS_POSTAL_CODE }}"
+            },
+            {
+              "name": "CUPS_CITY",
+              "value": "={{ $json.contract.CUPS_CITY }}"
+            },
+            {
+              "name": "CUPS_NOMBRE_POBLACION",
+              "value": "={{ $json.contract.CUPS_NOMBRE_POBLACION }}"
+            },
+            {
+              "name": "CUPS_COUNTY",
+              "value": "={{ $json.contract.CUPS_COUNTY }}"
+            },
+            {
+              "name": "CICLO_LECTURA",
+              "value": "={{ $json.contract.CICLO_LECTURA }}"
+            },
+            {
+              "name": "digitalSignature",
+              "value": "={{ $json.contract.digitalSignature }}"
+            },
+            {
+              "name": "SIPSDataReported",
+              "value": "={{ $json.contract.SIPSDataReported }}"
+            },
+            {
+              "name": "EXTRA_INFO__FACTURA_PAPEL",
+              "value": "={{ $json.contract['EXTRA_INFO__FACTURA_PAPEL'] }}"
+            },
+            {
+              "name": "EXTRA_INFO__NO_TRATAR_DATOS",
+              "value": "={{ $json.contract['EXTRA_INFO__NO_TRATAR_DATOS'] }}"
+            },
+            {
+              "name": "EXTRA_INFO__NO_CEDER_DATOS",
+              "value": "={{ $json.contract['EXTRA_INFO__NO_CEDER_DATOS'] }}"
+            },
+            {
+              "name": "DESCRIPTION",
+              "value": "={{ $json.contract.DESCRIPTION }}"
+            },
+            {
+              "name": "FIRMA_DATE",
+              "value": "={{ $today.format('yyyy-MM-dd') }}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "VAT_FILE",
+              "inputDataFieldName": "VAT_FILE"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "INVOICE_FILE",
+              "inputDataFieldName": "INVOICE_FILE"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "ANEXO_RESIDENCIAL_FILE",
+              "inputDataFieldName": "ANEXO_RESIDENCIAL_FILE"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "OTHER_FILE",
+              "inputDataFieldName": "OTHER_FILE"
+            }
+          ]
+        },
         "options": {}
       },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         -352,
         448
       ],
-      "id": "merge-with-documents",
-      "name": "Merge With Documents"
+      "id": "create-contract-with-files",
+      "name": "Create Contract with Files"
     },
     {
       "parameters": {
-        "jsCode": "// Make WolfCRM contract creation request with conditional file uploads\nconst item = $input.first();\nconst FormData = require('form-data');\nconst axios = require('axios');\n\nconst apiUrl = $vars.WOLF_API_URL || 'https://canallogos.v3.dev.partnertec.es/application/ws/v1/index.php';\n\n// Build form data with all contract fields\nconst formData = new FormData();\n\n// Authentication and method\nformData.append('token', item.json.wolf_token);\nformData.append('method', 'set');\nformData.append('class', 'Contract');\n\n// Contract fields\nconst contract = item.json.contract;\nformData.append('USER_ID', contract.USER_ID);\nformData.append('CUSTOMER_ID', item.json.customer_id);\nformData.append('CONTRACT_TYPE', contract.CONTRACT_TYPE);\nformData.append('SUPPLY', contract.SUPPLY);\nformData.append('CUPS', contract.CUPS);\nformData.append('PRODUCT', contract.PRODUCT);\nformData.append('TARIFA_BOMP', contract.TARIFA_BOMP);\nformData.append('TITULAR_NAME', contract.TITULAR_NAME);\nformData.append('TITULAR_VAT', contract.TITULAR_VAT);\nformData.append('EXTRA_INFO__TITULAR_PHONE', contract['EXTRA_INFO__TITULAR_PHONE']);\nformData.append('IBAN', contract.IBAN);\nformData.append('MANDATO_SEPA', contract.MANDATO_SEPA);\nformData.append('CUPS_ADDRESS', contract.CUPS_ADDRESS);\nformData.append('CUPS_POSTAL_CODE', contract.CUPS_POSTAL_CODE);\nformData.append('CUPS_CITY', contract.CUPS_CITY);\nformData.append('CUPS_NOMBRE_POBLACION', contract.CUPS_NOMBRE_POBLACION);\nformData.append('CUPS_COUNTY', contract.CUPS_COUNTY);\nformData.append('CICLO_LECTURA', contract.CICLO_LECTURA);\nformData.append('digitalSignature', contract.digitalSignature);\nformData.append('SIPSDataReported', contract.SIPSDataReported);\nformData.append('EXTRA_INFO__FACTURA_PAPEL', contract['EXTRA_INFO__FACTURA_PAPEL']);\nformData.append('EXTRA_INFO__NO_TRATAR_DATOS', contract['EXTRA_INFO__NO_TRATAR_DATOS']);\nformData.append('EXTRA_INFO__NO_CEDER_DATOS', contract['EXTRA_INFO__NO_CEDER_DATOS']);\nformData.append('DESCRIPTION', contract.DESCRIPTION);\nformData.append('FIRMA_DATE', new Date().toISOString().split('T')[0]);\n\n// Conditionally add binary files only if they exist\nif (item.binary) {\n  const fileFields = ['VAT_FILE', 'INVOICE_FILE', 'ANEXO_RESIDENCIAL_FILE', 'OTHER_FILE'];\n  \n  for (const fieldName of fileFields) {\n    if (item.binary[fieldName]) {\n      const file = item.binary[fieldName];\n      formData.append(fieldName, Buffer.from(file.data, 'base64'), {\n        filename: file.fileName || `${fieldName}.pdf`,\n        contentType: file.mimeType || 'application/pdf'\n      });\n    }\n  }\n}\n\n// Make the HTTP request\ntry {\n  const response = await axios.post(apiUrl, formData, {\n    headers: formData.getHeaders()\n  });\n  \n  return [{\n    json: response.data\n  }];\n} catch (error) {\n  return [{\n    json: {\n      status: error.response?.status || 500,\n      error: error.message,\n      data: error.response?.data || null\n    }\n  }];\n}"
+        "jsCode": "// Process contract creation result\nconst contractResult = $input.item.json;\n\nconst success = contractResult.status == 200;\nconst contractId = contractResult.data?.objectId || null;\nconst contractCode = contractResult.data?.CODE || null;\n\n// Try to get NODO_id from input JSON or fall back\nconst nodoId = contractResult.NODO_id || $('Transform NODO Data').first().json.NODO_id;\nconst customerId = contractResult.customer_id || $('Merge Customer Paths').first().json.customer_id;\n\nreturn [{\n  json: {\n    success,\n    NODO_id: nodoId,\n    wolf_contract_id: contractId,\n    wolf_contract_code: contractCode,\n    wolf_customer_id: customerId,\n    documents_attached: success,\n    error: success ? null : JSON.stringify(contractResult),\n    contract_response: contractResult\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         -128,
-        448
-      ],
-      "id": "prepare-contract-request",
-      "name": "Create Contract with Files (Code)"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Process contract creation result\nconst contractResult = $input.item.json;\nconst prevData = $('Merge With Documents').first().json;\n\nconst success = contractResult.status == 200;\nconst contractId = contractResult.data?.objectId || null;\nconst contractCode = contractResult.data?.CODE || null;\n\nreturn [{\n  json: {\n    success,\n    NODO_id: prevData.NODO_id,\n    wolf_contract_id: contractId,\n    wolf_contract_code: contractCode,\n    wolf_customer_id: prevData.customer_id,\n    customer_created: prevData.customer_created || false,\n    documents_uploaded: prevData.total_documents || 0,\n    uploaded_fields: prevData.mapped_fields || [],\n    error: success ? null : JSON.stringify(contractResult),\n    contract_response: contractResult\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        64,
         448
       ],
       "id": "process-result",
@@ -802,7 +927,7 @@
         ],
         [
           {
-            "node": "Merge With Documents",
+            "node": "Create Contract with Files",
             "type": "main",
             "index": 0
           }
@@ -835,25 +960,14 @@
       "main": [
         [
           {
-            "node": "Merge With Documents",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge With Documents": {
-      "main": [
-        [
-          {
-            "node": "Create Contract with Files (Code)",
+            "node": "Create Contract with Files",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Create Contract with Files (Code)": {
+    "Create Contract with Files": {
       "main": [
         [
           {
